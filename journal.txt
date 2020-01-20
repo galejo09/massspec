@@ -1,3 +1,8 @@
 16/01/2020
 - More reading (TOF-SIMS, MALDI)
 - Installed Git and Anaconda
+
+17/01/2020
+- Started translating AcqReadHeader.m 
+- Finished reading list
+
