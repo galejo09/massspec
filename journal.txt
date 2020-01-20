@@ -6,3 +6,7 @@
 - Started translating AcqReadHeader.m 
 - Finished reading list
 
+20/01/2020
+- Lab meeting
+- Worked with Andrey:  beam profile, laser components disassembly, mirror cleaning
+
