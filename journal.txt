@@ -16,3 +16,5 @@
 
 22/01/2020
 - Finished translating bulk of AcqReadHeader
+- Collected beam profile for Pharos. Wrote method for beam profile/M2 set-up in elog
+- Wrote SOP_submarine (TOFData)
