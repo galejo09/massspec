@@ -10,6 +10,9 @@
 - Lab meeting
 - Worked with Andrey:  beam profile, laser components disassembly, mirror cleaning
 
-21/02/2020
+21/01/2020
 - Beam profile set-up
 - some progress on AcqReadHeader
+
+22/01/2020
+- Finished translating bulk of AcqReadHeader
