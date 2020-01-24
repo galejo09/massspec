@@ -8,10 +8,10 @@ class AnalyzeAcq:
 
     def read_header(self, display=False):
         """
-                Reads the header of a binary acquisiton file.
+        Reads the header of a binary acquisiton file.
 
-                :param display: if True, the values in the header are printed
-                :type: bool
+        :param display: if True, the values in the header are printed
+        :type: bool
 
         :return: values in the header
         :type: dict
@@ -54,6 +54,24 @@ class AnalyzeAcq:
     def time(self, header):
         """
         Returns time axis in us.
+
+        :param header: header of acquisition file
+        :type: dict
+
+        :return: time array in us
+        :type: numpy.ndarray
         """
         t = (np.arange(0, header['uLen'][0]-16) * header['dSamplingPeriod'][0]) / 1e3
+
         return t
+
+    def read_single_frame(self, header, frame):
+       
+        print(type(header['uLen'][0]))
+        print(type(header['u1Pos'][0]))
+
+        spectrum = np.fromfile(self.file, dtype=np.int8, count=header['uLen'][0], offset=np.int(header['u1Pos'][0] + (frame-1)*header['uLen'][0]))
+        spectrum = spectrum[0:-16]
+
+        return spectrum
+       
