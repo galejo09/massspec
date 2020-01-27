@@ -26,3 +26,6 @@
 24/01/2020
 - Added time and read_single_frame funcs to massspec.py
 - Laser alignment 
+
+27/01/2020
+- Lab meeting (11-12:30)
