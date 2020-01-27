@@ -22,3 +22,7 @@
 23/01/2020
 - Add diode back to Reflex
 - Started MALDI prep with TFA and 2,5-DHB
+
+24/01/2020
+- Added time and read_single_frame funcs to massspec.py
+- Laser alignment 
