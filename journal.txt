@@ -29,6 +29,6 @@
 
 27/01/2020
 - Lab meeting (11-12:30)
-- MALDI sample prep and mass spec w/ REFLEX (Matrices: 2,5-DBH, cinnamic acid; Peptides: angiotensin, bradykinin; Proteins: Ubiquitin and Insulin)
+- MALDI sample prep and mass spec w/ REFLEX (Matrices: 2,5-DBH, alpha chloro ....cinnamic acid; Peptides: angiotensin, bradykinin; Proteins: Ubiquitin and Insulin)
 
 
