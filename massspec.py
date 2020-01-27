@@ -6,6 +6,7 @@ class AnalyzeAcq:
     def __init__(self, file):
         self.file = file
 
+
     def read_header(self, display=False):
         """
         Reads the header of a binary acquisiton file.
@@ -51,6 +52,7 @@ class AnalyzeAcq:
 
         return data
 
+
     def time(self, header):
         """
         Returns time axis in us.
@@ -65,13 +67,47 @@ class AnalyzeAcq:
 
         return t
 
-    def read_single_frame(self, header, frame):
-       
-        print(type(header['uLen'][0]))
-        print(type(header['u1Pos'][0]))
 
-        spectrum = np.fromfile(self.file, dtype=np.int8, count=header['uLen'][0], offset=np.int(header['u1Pos'][0] + (frame-1)*header['uLen'][0]))
-        spectrum = spectrum[0:-16]
+    def read_single_frame(self, header, frame):
+        """
+        Returns spectrum of frame from file.
+
+        :param header: header of acquisiton file
+        :type: dict
+        :param frame: frame number; if frame is outside the bounds of (1, nFramesCount), an exception is raised
+        :type: int 
+
+        :return: spectrum in bytes
+        :type: numpy.ndarray
+        """
+        # check if frame number is less than the number of frames in file
+        if frame not in range(1, header['nFramesCount'][0]):
+            raise ValueError("Choose a frame number between 1 and {}".format(header['nFramesCount'][0]))
+        else:
+            spectrum = np.fromfile(self.file, dtype=np.int8, count=header['uLen'][0], offset=np.int(header['u1Pos'][0] + (frame-1)*header['uLen'][0]))
+            spectrum = spectrum[0:-16]
 
         return spectrum
+
+
+    def byte2volts(self, header, spectrum):
+        """
+        Returns voltages from acquisiton file in uV.
+
+        :param header: header of acquisiton file
+        :type: dict
+        :param spectrum: spectrum in bytes
+        :type: numpy.ndarray
+
+        :return: voltages in uV
+        :type: numpy.ndarray
+        """
+        int8max = np.float64(127) # originally double(int8(2^7)) in MATLAB
+
+        volts = -( ((header['dHighV'] - header['dLowV']) / (2.0*int8max)) * (spectrum+int8max) + header['dLowV'])
+
+        return volts
+
+
+        
        
