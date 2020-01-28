@@ -31,4 +31,6 @@
 - Lab meeting (11-12:30)
 - MALDI sample prep and mass spec w/ REFLEX (Matrices: 2,5-DBH, alpha chloro ....cinnamic acid; Peptides: angiotensin, bradykinin; Proteins: Ubiquitin and Insulin)
 
-
+28/01/2020
+- Finished the rest of MALDI specs 
+- Start Aja's project (SUBMARINE sample prep w/ liquid nitrogen)
