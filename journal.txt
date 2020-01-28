@@ -34,3 +34,4 @@
 28/01/2020
 - Finished the rest of MALDI specs 
 - Start Aja's project (SUBMARINE sample prep w/ liquid nitrogen)
+- Made stock solution of curcumin+acetonitrile (2.5 mM)
