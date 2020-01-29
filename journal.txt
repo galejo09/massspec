@@ -35,3 +35,8 @@
 - Finished the rest of MALDI specs 
 - Start Aja's project (SUBMARINE sample prep w/ liquid nitrogen)
 - Made stock solution of curcumin+acetonitrile (2.5 mM)
+
+29/01/2020
+- Measured power of laser 
+- Chemical safetry training (11 am)
+- Tried to start Aja's experiment but there were problems with the digitizer
