@@ -40,3 +40,8 @@
 - Measured power of laser 
 - Chemical safetry training (11 am)
 - Tried to start Aja's experiment but there were problems with the digitizer
+
+30/01/2020
+- Worked on Feb. 3 presentation
+- Tried to acquire curcumin spectra through MALDI but Reflex malfunctioned
+- Tried to acquire curcumin spectra through PHAROS but laser was misaligned
