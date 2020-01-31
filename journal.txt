@@ -45,3 +45,7 @@
 - Worked on Feb. 3 presentation
 - Tried to acquire curcumin spectra through MALDI but Reflex malfunctioned
 - Tried to acquire curcumin spectra through PHAROS but laser was misaligned
+
+31/01/2020
+- Worked on Feb. 3 presentation
+- Aligned red and green lasers (PHAROS)
