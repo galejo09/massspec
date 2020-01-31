@@ -49,3 +49,4 @@
 31/01/2020
 - Worked on Feb. 3 presentation
 - Aligned red and green lasers (PHAROS)
+- Tried the sample preparation w/ liquid nitrogen and hot finger 
