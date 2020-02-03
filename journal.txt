@@ -50,3 +50,8 @@
 - Worked on Feb. 3 presentation
 - Aligned red and green lasers (PHAROS)
 - Tried the sample preparation w/ liquid nitrogen and hot finger 
+
+03/02/2020
+- Presented at group meeting 
+- Set up for PHAROS third harmonic
+- Measured PHAROS power - suspicious values, will remeasure tomorrow
