@@ -55,3 +55,7 @@
 - Presented at group meeting 
 - Set up for PHAROS third harmonic
 - Measured PHAROS power - suspicious values, will remeasure tomorrow
+
+04/02/2020
+- Fixed issue with PHAROS power
+- Tried to optimize third harmonic
