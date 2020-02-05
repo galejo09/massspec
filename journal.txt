@@ -59,3 +59,7 @@
 04/02/2020
 - Fixed issue with PHAROS power
 - Tried to optimize third harmonic
+
+05/02/2020
+- Tried to optimize THG; did diode and power measurements
+- Discovered that the half-wave plates were switched; check to see if it makes a difference tomorrow
