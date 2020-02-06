@@ -63,3 +63,6 @@
 05/02/2020
 - Tried to optimize THG; did diode and power measurements
 - Discovered that the half-wave plates were switched; check to see if it makes a difference tomorrow
+
+06/02/2020
+- Switched back the half-wave plates (to original set-up) and flipped the harmonic oscillator
