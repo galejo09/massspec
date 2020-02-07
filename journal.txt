@@ -66,3 +66,6 @@
 
 06/02/2020
 - Switched back the half-wave plates (to original set-up) and flipped the harmonic oscillator
+
+07/02/2020
+- Made schematic diagram of harmonics setup
