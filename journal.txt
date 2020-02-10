@@ -69,3 +69,6 @@
 
 07/02/2020
 - Made schematic diagram of harmonics setup
+
+10/02/2020
+- Meeting; finished schematic diagram and plotted power of Third Harmonic
