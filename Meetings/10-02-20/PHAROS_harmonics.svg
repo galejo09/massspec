@@ -721,9 +721,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="0.70710678"
-     inkscape:cx="593.33191"
-     inkscape:cy="444.00917"
+     inkscape:zoom="1.4142136"
+     inkscape:cx="736.59289"
+     inkscape:cy="563.6192"
      inkscape:document-units="mm"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -917,7 +917,7 @@
        transform="matrix(-0.71342052,-0.70073615,0.71342052,-0.70073615,0,0)" />
     <path
        sodipodi:type="star"
-       style="fill:none;fill-opacity:1;stroke:#000000;stroke-width:0.31813264;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       style="fill:none;fill-opacity:1;stroke:#000000;stroke-width:0.26884397;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
        id="path7304"
        sodipodi:sides="3"
        sodipodi:cx="184.48154"
@@ -942,11 +942,11 @@
        xml:space="preserve"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.93888903px;line-height:1.25;font-family:'Times New Roman';-inkscape-font-specification:'Times New Roman, ';letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
        x="178.90919"
-       y="292.95599"
+       y="293.48517"
        id="text7365"><tspan
          sodipodi:role="line"
          x="178.90919"
-         y="292.95599"
+         y="293.48517"
          style="font-size:4.93888903px;stroke-width:0.26458332"
          id="tspan7367"><tspan
    style="font-style:italic;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:'Times New Roman';-inkscape-font-specification:'Times New Roman,  Italic'"
@@ -1017,7 +1017,7 @@
          id="tspan7440"
          x="26.809071"
          y="134.03847"
-         style="stroke-width:0.26458332">Thorlabs HBSY13 </tspan></text>
+         style="stroke-width:0.26458332;font-size:4.93888889px">Thorlabs HBSY13 </tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.93888855px;line-height:1.25;font-family:'Times New Roman';-inkscape-font-specification:'Times New Roman, ';letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
@@ -1028,7 +1028,7 @@
          id="tspan7476"
          x="33.480564"
          y="248.05899"
-         style="stroke-width:0.26458332">periscope</tspan></text>
+         style="stroke-width:0.26458332;font-size:4.93888889px">periscope</tspan></text>
     <text
        xml:space="preserve"
        style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:4.93888903px;line-height:1.25;font-family:'Times New Roman';-inkscape-font-specification:'Times New Roman, ';letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
@@ -1056,7 +1056,7 @@
        id="path7514-6"
        inkscape:connector-curvature="0" />
     <path
-       style="fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:0.36000001;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       style="fill:#000000;fill-opacity:1;stroke:#000000;stroke-width:0.36;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
        d="M 241.85895,275.85676 V 253.27899"
        id="path7514-5"
        inkscape:connector-curvature="0" />
@@ -1181,7 +1181,7 @@
          id="tspan24771-3-6-7"
          x="59.427727"
          y="106.35489"
-         style="font-size:4.93888903px;stroke-width:0.26458332">532 nm</tspan><tspan
+         style="font-size:4.93888903px;stroke-width:0.26458332">513 nm</tspan><tspan
          sodipodi:role="line"
          x="59.427727"
          y="112.5285"
