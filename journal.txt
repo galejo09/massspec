@@ -72,3 +72,7 @@
 
 10/02/2020
 - Meeting; finished schematic diagram and plotted power of Third Harmonic
+
+11/02/2020
+- Fetched Liquid N2
+- Aligned 1um PHAROS
