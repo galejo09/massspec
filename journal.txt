@@ -80,3 +80,4 @@
 12/02/2020
 - Aligned 1um PHAROS into Submarine + power measurements
 - Acquired spectra of bradykinin + ITO
+- Made 20mM Bradykinin (solvent: water, 10mg Bradykinin)
