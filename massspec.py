@@ -77,37 +77,65 @@ class AnalyzeAcq:
         :param frame: frame number; if frame is outside the bounds of (1, nFramesCount), an exception is raised
         :type: int 
 
-        :return: spectrum in bytes
+        :return: spectrum in uV
         :type: numpy.ndarray
         """
         # check if frame number is less than the number of frames in file
-        if frame not in range(1, header['nFramesCount'][0]):
+        if frame not in range(1, header['nFramesCount'][0]+1):
             raise ValueError("Choose a frame number between 1 and {}".format(header['nFramesCount'][0]))
         else:
             spectrum = np.fromfile(self.file, dtype=np.int8, count=header['uLen'][0], offset=np.int(header['u1Pos'][0] + (frame-1)*header['uLen'][0]))
             spectrum = spectrum[0:-16]
 
+        # convert bytes to volts; the equivalent MATLAB script is byte2volts
+        int8max = np.float64(127) # originally double(int8(2^7)) in MATLAB
+        spectrum = -( ((header['dHighV'] - header['dLowV']) / (2.0*int8max)) * (spectrum+int8max) + header['dLowV'])
+
         return spectrum
 
 
-    def byte2volts(self, header, spectrum):
+    def read_frames(self, header, subset="all"):
         """
-        Returns voltages from acquisiton file in uV.
+        Returns a list of frames from the acquisition file.
 
         :param header: header of acquisiton file
         :type: dict
-        :param spectrum: spectrum in bytes
-        :type: numpy.ndarray
+        :param subset: range of frames as a tuple; default is "all" 
+        :type: tuple
 
-        :return: voltages in uV
-        :type: numpy.ndarray
+        :return: 2D array of frames
+        :type: np.ndarray
         """
-        int8max = np.float64(127) # originally double(int8(2^7)) in MATLAB
+        n_frames = header['nFramesCount'][0]
 
-        volts = -( ((header['dHighV'] - header['dLowV']) / (2.0*int8max)) * (spectrum+int8max) + header['dLowV'])
+        frames = []
 
-        return volts
+        if subset is "all":
+            for frame in range(1, n_frames+1):
+                spectrum = read_single_frame(self, header, frame)
+                frames.append(spectrum)
+        elif type(subset) is tuple:  
+            start = subset[0]
+            end = subset[1]
+            if start > n_frames:
+                raise IOError(f"Frame {start} is greater than the total number of frames ({n_frames})")
+            elif end > n_frames:
+                raise IOError(f"Frame {end} is greater than the total numner of frames ({n_frames})")
+            for frame in range(start, end+1):
+                spectrum = read_single_frame(self, header, frame)
+                frames.append(spectrum)
+        else:
+            raise TypeError("Subset argument must be string 'all' or tuple (start, end)")
+
+        return np.asarray(frames)
+
+
+    def avg_frames(self, frames):
+        return np.mean(frames, axis=0)
+
 
 
         
-       
+
+        
+
