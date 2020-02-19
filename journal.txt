@@ -91,3 +91,12 @@
 - Realigned 1um and 513 nm into Submarine
 - sample prep of 100uM Bradykinin from stock solution (10 labeled vials)
 - spectra of bradykinin on ITO (with 1um - weak signal and 513nm - no signal)
+
+17/02/2020
+- Finished slide presentation for meeting (wasn't able to present)
+
+18/02/2020
+- Day-off
+
+19/02/2020
+- Worked on massspec 
