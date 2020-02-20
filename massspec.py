@@ -1,12 +1,41 @@
 import numpy as np
 import os
-
+from os.path import join, getsize, isfile, isdir
+from pathlib import Path
 
 class AnalyzeAcq:
-    def __init__(self, file):
-        self.file = file
+    def __init__(self, directory):
+        self.directory = directory
 
 
+    def load_data(self, date, listfiles=True, files="all"):
+        d_format = parse(date)
+        d = f"/{d_format.year}-{d_format:%m}-{d_format:%d}"
+        full_path = Path(self.directory + d)
+        print(full_path)
+
+        if isdir(full_path) is False:
+            raise Exception(f'Folder {d} does not exist')
+
+        if listfiles is True:
+            for f in [file for file in os.listdir(full_path)]:
+                print(f)
+
+        data = []
+        
+        if files is "all":
+            for root, dirs, files in os.walk(full_path):
+                for f in files:
+                    data.append(str(Path(os.path.join(root, f))))
+        if type(files) is list:
+            for root, dirs, files in os.walk(full_path):
+                for f in files:
+                    if f[:2] in files:
+                        data.append(str(Path(os.path.join(root, f))))
+
+        return data
+
+                    
     def read_header(self, display=False):
         """
         Reads the header of a binary acquisiton file.
@@ -148,7 +177,7 @@ class AnalyzeAcq:
 
         :return: mass-to-charge ratios
         :type: numpy.ndarray 
-        """"
+        """
         if type(params) is list:
             E_0 = params[0]
             s_0 = params[1]
@@ -157,7 +186,7 @@ class AnalyzeAcq:
             d = params[4]
         elif type(params) is dict:
             E_0 = params["E_0"]
-            s_0 = params["s_0]
+            s_0 = params["s_0"]
             E_1 = params["E_1"]
             s_1 = params["s_1"]
             d = params["d"]
@@ -165,14 +194,3 @@ class AnalyzeAcq:
             TypeError("Arg params must be a list or dictionary")
             
         return 2*( (t*(E_0*s_0 + E_1*s_1)**(1/2))/d )**2
-
-
-    def
-
-
-
-
-        
-
-        
-
