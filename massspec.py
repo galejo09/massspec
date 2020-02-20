@@ -96,24 +96,24 @@ class AnalyzeAcq:
 
     def read_frames(self, header, subset="all"):
         """
-        Returns a list of frames from the acquisition file.
+        Returns a list of spectra from the acquisition file.
 
         :param header: header of acquisiton file
         :type: dict
         :param subset: range of frames as a tuple; default is "all" 
         :type: tuple
 
-        :return: 2D array of frames
-        :type: np.ndarray
+        :return: 2D array of spectra
+        :type: numpy.ndarray
         """
         n_frames = header['nFramesCount'][0]
 
-        frames = []
+        spectra = []
 
         if subset is "all":
             for frame in range(1, n_frames+1):
                 spectrum = read_single_frame(self, header, frame)
-                frames.append(spectrum)
+                spectra.append(spectrum)
         elif type(subset) is tuple:  
             start = subset[0]
             end = subset[1]
@@ -123,15 +123,52 @@ class AnalyzeAcq:
                 raise IOError(f"Frame {end} is greater than the total numner of frames ({n_frames})")
             for frame in range(start, end+1):
                 spectrum = read_single_frame(self, header, frame)
-                frames.append(spectrum)
+                spectra.append(spectrum)
         else:
             raise TypeError("Subset argument must be string 'all' or tuple (start, end)")
 
-        return np.asarray(frames)
+        return np.asarray(spectra)
 
 
-    def avg_frames(self, frames):
-        return np.mean(frames, axis=0)
+    def avg_spectra(self, spectra):
+        return np.mean(spectra, axis=0)
+
+
+    def mass2charge(self, t, params):
+        """
+        Converts flight times to mass-to-charge ratios.
+
+        :param t: flight times in us
+        :type: numpy.ndarray
+        :param params: constants for the mass-to-charge formula; 
+            if a list, the order must be as follows: [E_0, s_0, E_1, s_1, d]; 
+            if a dict, the keys must be strings: "E_0", "s_0", "E_1", "s_1", "d";
+            E-fields must be provided in V/m and distances in meters.
+        :type: list
+
+        :return: mass-to-charge ratios
+        :type: numpy.ndarray 
+        """"
+        if type(params) is list:
+            E_0 = params[0]
+            s_0 = params[1]
+            E_1 = params[2]
+            s_1 = params[3]
+            d = params[4]
+        elif type(params) is dict:
+            E_0 = params["E_0"]
+            s_0 = params["s_0]
+            E_1 = params["E_1"]
+            s_1 = params["s_1"]
+            d = params["d"]
+        else:
+            TypeError("Arg params must be a list or dictionary")
+            
+        return 2*( (t*(E_0*s_0 + E_1*s_1)**(1/2))/d )**2
+
+
+    def
+
 
 
 
