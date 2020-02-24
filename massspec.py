@@ -186,7 +186,7 @@ class AnalyzeAcq:
         """
         Converts flight times to mass-to-charge ratios.
 
-        :param t: flight times in us
+        :param t: flight times in s
         :type: numpy.ndarray
         :param params: constants for the mass-to-charge formula; 
             if a list, the order must be as follows: [E_0, s_0, E_1, s_1, d]; 
