@@ -142,8 +142,6 @@ class AnalyzeAcq:
         :return: 2D array of spectra or mean spectrum
         :type: numpy.ndarray
         """
-        header = self.read_header(file)
-
         n_frames = header['nFramesCount'][0]
 
         spectra = []
