@@ -9,11 +9,23 @@ class AnalyzeAcq:
         self.directory = directory
 
 
-    def load_data(self, date, listfiles=True, files="all"):
+    def load_data(self, date, listfiles=True, subset="all"):
+        """
+        Stores file names within the experiment directory.
+
+        :param date: date of the experiment in any format
+        :type: string 
+        :param listfiles: if True, every file name and its index is printed
+        :type: bool
+        :param files: list of file names to be stored; all files stored by default
+        :type: list
+
+        :return: full paths of files in date folder
+        :type: list
+        """
         d_format = parse(date)
         d = f"/{d_format.year}-{d_format:%m}-{d_format:%d}"
         full_path = Path(self.directory + d)
-        print(full_path)
 
         if isdir(full_path) is False:
             raise Exception(f'Folder {d} does not exist')
@@ -24,15 +36,18 @@ class AnalyzeAcq:
 
         data = []
         
-        if files is "all":
+        if subset is "all":
             for root, dirs, files in os.walk(full_path):
                 for f in files:
                     data.append(str(Path(os.path.join(root, f))))
-        if type(files) is list:
+        if type(subset) is list:
+            subset = [ str(file_no).zfill(2) for file_no in subset ]
             for root, dirs, files in os.walk(full_path):
-                for f in files:
-                    if f[:2] in files:
-                        data.append(str(Path(os.path.join(root, f))))
+                for file_no in subset:
+                    files = [f for f in files if 'div' in f]
+                    for f in files:
+                        if f[:2] == file_no:
+                            data.append(str(Path(os.path.join(root, f))))      
 
         return data
 
@@ -100,7 +115,7 @@ class AnalyzeAcq:
         return t
 
 
-    def read_single_frame(self, file, frame):
+    def read_single_frame(self, file, header, frame):
         """
         Returns spectrum of frame from file.
 
@@ -112,8 +127,6 @@ class AnalyzeAcq:
         :return: spectrum in uV
         :type: numpy.ndarray
         """
-        header = self.read_header(file)
-
         # check if frame number is less than the number of frames in file
         if frame not in range(1, header['nFramesCount'][0]+1):
             raise ValueError("Choose a frame number between 1 and {}".format(header['nFramesCount'][0]))
@@ -128,13 +141,13 @@ class AnalyzeAcq:
         return spectrum
 
 
-    def read_frames(self, file, subset="all", average=False):
+    def read_frames(self, file, header, subset="all", average=False):
         """
         Returns a list of spectra from the acquisition file.
 
         :param header: header of acquisiton file
         :type: dict
-        :param subset: range of frames as a tuple; default is "all" 
+        :param subset: range of frames as a tuple; default is 'all'
         :type: tuple
         :param average: if True, mean of spectra is returned
         :type: bool
@@ -148,7 +161,7 @@ class AnalyzeAcq:
 
         if subset is "all":
             for frame in range(1, n_frames+1):
-                spectrum = self.read_single_frame(file, frame)
+                spectrum = self.read_single_frame(file, header, frame)
                 spectra.append(spectrum)
         elif type(subset) is tuple:  
             start = subset[0]
