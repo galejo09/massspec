@@ -18,8 +18,8 @@ class AnalyzeAcq:
             raise Exception(f'Folder {d} does not exist')
 
         if listfiles is True:
-            for f in [file for file in os.listdir(full_path)]:
-                print(f)
+            for i, f in enumerate([file for file in os.listdir(full_path)]):
+                print(f"{i} : {f}")
 
         data = []
         
