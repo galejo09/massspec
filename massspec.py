@@ -36,7 +36,7 @@ class AnalyzeAcq:
         return data
 
                     
-    def read_header(self, display=False):
+    def read_header(self, file, display=False):
         """
         Reads the header of a binary acquisiton file.
 
@@ -99,7 +99,7 @@ class AnalyzeAcq:
         return t
 
 
-    def read_single_frame(self, header, frame):
+    def read_single_frame(self, file, frame):
         """
         Returns spectrum of frame from file.
 
@@ -111,11 +111,13 @@ class AnalyzeAcq:
         :return: spectrum in uV
         :type: numpy.ndarray
         """
+        header = self.read_header(file)
+
         # check if frame number is less than the number of frames in file
         if frame not in range(1, header['nFramesCount'][0]+1):
             raise ValueError("Choose a frame number between 1 and {}".format(header['nFramesCount'][0]))
         else:
-            spectrum = np.fromfile(self.file, dtype=np.int8, count=header['uLen'][0], offset=np.int(header['u1Pos'][0] + (frame-1)*header['uLen'][0]))
+            spectrum = np.fromfile(file, dtype=np.int8, count=header['uLen'][0], offset=np.int(header['u1Pos'][0] + (frame-1)*header['uLen'][0]))
             spectrum = spectrum[0:-16]
 
         # convert bytes to volts; the equivalent MATLAB script is byte2volts
@@ -125,7 +127,7 @@ class AnalyzeAcq:
         return spectrum
 
 
-    def read_frames(self, header, subset="all"):
+    def read_frames(self, file, subset="all", average=False):
         """
         Returns a list of spectra from the acquisition file.
 
@@ -133,17 +135,21 @@ class AnalyzeAcq:
         :type: dict
         :param subset: range of frames as a tuple; default is "all" 
         :type: tuple
+        :param average: if True, mean of spectra is returned
+        :type: bool
 
-        :return: 2D array of spectra
+        :return: 2D array of spectra or mean spectrum
         :type: numpy.ndarray
         """
+        header = self.read_header(file)
+
         n_frames = header['nFramesCount'][0]
 
         spectra = []
 
         if subset is "all":
             for frame in range(1, n_frames+1):
-                spectrum = self.read_single_frame(header, frame)
+                spectrum = self.read_single_frame(file, frame)
                 spectra.append(spectrum)
         elif type(subset) is tuple:  
             start = subset[0]
@@ -153,16 +159,15 @@ class AnalyzeAcq:
             elif end > n_frames:
                 raise IOError(f"Frame {end} is greater than the total numner of frames ({n_frames})")
             for frame in range(start, end+1):
-                spectrum = self.read_single_frame(header, frame)
+                spectrum = self.read_single_frame(file, frame)
                 spectra.append(spectrum)
         else:
             raise TypeError("Subset argument must be string 'all' or tuple (start, end)")
 
+        if average is True:
+            return np.mean(spectra, axis=0)
+
         return np.asarray(spectra)
-
-
-    def avg_spectra(self, spectra):
-        return np.mean(spectra, axis=0)
 
 
     def mass2charge(self, t, params):
