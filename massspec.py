@@ -17,7 +17,7 @@ class AnalyzeAcq:
         :type: string 
         :param listfiles: if True, every file name and its index is printed
         :type: bool
-        :param files: list of file names to be stored; all files stored by default
+        :param subset: list of file names to be stored (e.g. [1, 2] for files 01.signal.div, 02.signal.div); all files stored by default
         :type: list
 
         :return: full paths of files in date folder
