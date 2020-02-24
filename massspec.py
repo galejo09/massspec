@@ -141,7 +141,7 @@ class AnalyzeAcq:
 
         if subset is "all":
             for frame in range(1, n_frames+1):
-                spectrum = read_single_frame(self, header, frame)
+                spectrum = self.read_single_frame(header, frame)
                 spectra.append(spectrum)
         elif type(subset) is tuple:  
             start = subset[0]
@@ -151,7 +151,7 @@ class AnalyzeAcq:
             elif end > n_frames:
                 raise IOError(f"Frame {end} is greater than the total numner of frames ({n_frames})")
             for frame in range(start, end+1):
-                spectrum = read_single_frame(self, header, frame)
+                spectrum = self.read_single_frame(header, frame)
                 spectra.append(spectrum)
         else:
             raise TypeError("Subset argument must be string 'all' or tuple (start, end)")
