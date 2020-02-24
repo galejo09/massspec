@@ -103,3 +103,10 @@
 
 20/02/2020
 - Worked on massspec; added load_data and mass2charge funcs
+
+21/02/2020
+- Day-off
+
+24/02/2020
+- Worked on massspec (see git log)
+- Meeting
