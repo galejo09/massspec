@@ -46,10 +46,12 @@ class AnalyzeAcq:
         :return: values in the header
         :type: dict
         """
-        if os.path.exists(self.file) is False:
-            raise Exception(f'The file {self.file} does not exist.')
+        if os.path.exists(file) is False:
+            raise Exception(f'The file {file} does not exist.')
+        elif file.endswith('.div') is False:
+            raise IOError(f'The file must have a .div extension')
         else:
-            f = np.fromfile(self.file, count=-1)
+            f = np.fromfile(file, count=-1)
 
         params = ['uuid', 'nVersion', 't', 'nFramesCount', 'uLen', 'u1Pos', 'dHighV',
                   'dLowV', 'nFrameSize', 'nSize270', '1AcqFile', 'dThreshold1', 'dSamplingPeriod']
@@ -64,16 +66,16 @@ class AnalyzeAcq:
         data = {}
 
         for p, d, c, o in zip(params, dtypes, counts, offsets):
-            data[p] = np.fromfile(self.file, dtype=d, count=c, offset=o)
+            data[p] = np.fromfile(file, dtype=d, count=c, offset=o)
 
         if data['nVersion'] >= 2:
             data['nCommentLen'] = np.fromfile(
-                self.file, dtype=np.int32, count=1, offset=88)  # comment length
+                file, dtype=np.int32, count=1, offset=88)  # comment length
             data['szComment'] = np.fromfile(
-                self.file, dtype=np.uint8, count=data['nCommentLen'][0], offset=92)  # comment string
+                file, dtype=np.uint8, count=data['nCommentLen'][0], offset=92)  # comment string
 
         data['u1Size'] = os.path.getsize(
-            self.file)  # size of the file in bytes
+            file)  # size of the file in bytes
 
         if display == True:
             for key, value in data.items():
