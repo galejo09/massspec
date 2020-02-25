@@ -110,3 +110,6 @@
 24/02/2020
 - Worked on massspec (see git log)
 - Meeting
+
+25/02/2020
+- Worked on massspec (see git log) and 02-03-2020 notebook
