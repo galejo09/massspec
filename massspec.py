@@ -5,12 +5,13 @@ from pathlib import Path
 from dateutil.parser import parse 
 from scipy import signal
 
+
 class AnalyzeAcq:
     def __init__(self, directory):
         self.directory = directory
 
 
-    def load_data(self, date, listfiles=True, subset="all"):
+    def load_data(self, date, listfiles=False, subset="all"):
         """
         Stores file names within the experiment directory.
 
