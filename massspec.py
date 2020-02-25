@@ -3,6 +3,7 @@ import os
 from os.path import join, getsize, isfile, isdir
 from pathlib import Path
 from dateutil.parser import parse 
+from scipy import signal
 
 class AnalyzeAcq:
     def __init__(self, directory):
