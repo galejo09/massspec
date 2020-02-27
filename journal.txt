@@ -116,3 +116,7 @@
 
 26/02/2020
 - Worked on 02-0-20 notebook; found a problem in the mz formula
+
+27/02/2020
+- Set up new beam paths for the green and blue lights
+- Aligned all wavelengths into Submaribe
