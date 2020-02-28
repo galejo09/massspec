@@ -119,4 +119,8 @@
 
 27/02/2020
 - Set up new beam paths for the green and blue lights
-- Aligned all wavelengths into Submaribe
+- Aligned all wavelengths into Submarine
+
+28/02/2020
+- Measurements with 1um and 513nm
+- Fixed formula
