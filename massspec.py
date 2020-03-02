@@ -192,21 +192,28 @@ class AnalyzeAcq:
         :param t: flight times in us
         :type: numpy.ndarray
         :param params: constants for the mass-to-charge formula; 
-            if a list, the order must be as follows: [V_0, V_1, d]; 
-            if a dict, the keys must be strings: "V_0", "V_1", "d";
+            if a list, the order must be as follows: [V_0, V_1, s_0, s_1, d]; 
+            if a dict, the keys must be strings: "V_0", "V_1", "s_0", "s_1", "d";
             voltages must be provided in V and distances in m.
         :type: list
 
         :return: mass-to-charge ratios, relative voltages
         :type: numpy.ndarray, numpy.ndarray
         """
+        if len(params) != 5:
+            raise IOError("Arg params must have length 5")
+
         if type(params) is list:
             V_0 = params[0]
             V_1 = params[1]
-            d = params[2]
+            s_0 = params[2]
+            s_1 = params[3]
+            d = params[4]
         elif type(params) is dict:
             V_0 = params["V_0"]
             V_1 = params["V_1"]
+            s_0 = params["s_0"]
+            s_1 = params["s_1"]
             d = params["d"]
         else:
             TypeError("Arg params must be a list or dictionary")
@@ -216,7 +223,7 @@ class AnalyzeAcq:
 		
         t = t / 1e6 # convert from us to s
 		
-        mz = 2 * Da * e * np.square( (t * (V_0 + V_1)**(1/2))/d ) 
+        mz = 2 * Da * e * np.square((t * (E_0*s_0 + E_1*s_1)**(1/2))/d) 
 		
         peaks_i = signal.find_peaks(voltages, height=1)[0] # find voltage peaks
 
@@ -227,6 +234,11 @@ class AnalyzeAcq:
 			
         proton, proton_i = peaks[0], peaks_i[0] # identify the first peak as the proton
 		    
-        alpha = 1 / mz[proton_i] # let the calibration factor be alpha
+        alpha = np.absolute(1 - mz[proton_i]) # let the calibration factor be alpha
+
+        if mz[proton_i] > 1:
+            mz = mz - alpha
+        elif mz[proton_i] < 1:
+            mz = mz + alpha
 		
-        return mz*alpha, voltages/np.max(voltages)
+        return mz, voltages/np.max(voltages)
