@@ -242,3 +242,18 @@ class AnalyzeAcq:
             mz = mz + alpha
 		
         return mz, voltages/np.max(voltages)
+
+
+    def delta_t(self, h1, h2):
+        """
+        Calculates the time difference between two spectra in hours.
+
+        :param h1: header of the first spectra 
+        :type: dict 
+        :param h2: header of the second spectra
+        :type: dict
+
+        :return: time difference in hours
+        :type: numpy.float64
+        """
+        return np.absolute(h2["t"][0] - h1["t"][0]) / 3600 
