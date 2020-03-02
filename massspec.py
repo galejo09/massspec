@@ -41,7 +41,8 @@ class AnalyzeAcq:
         if subset is "all":
             for root, dirs, files in os.walk(full_path):
                 for f in files:
-                    data.append(str(Path(os.path.join(root, f))))
+                    if 'div' in f:
+                        data.append(str(Path(os.path.join(root, f))))
         if type(subset) is list:
             subset = [ str(file_no).zfill(2) for file_no in subset ]
             for root, dirs, files in os.walk(full_path):
