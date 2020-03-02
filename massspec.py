@@ -222,6 +222,9 @@ class AnalyzeAcq:
         e = 1.602e-19 # elementary charge
 		
         t = t / 1e6 # convert from us to s
+
+        E_0 = (V_0 - V_1)/s_0
+        E_1 = V_1/s_1
 		
         mz = 2 * Da * e * np.square((t * (E_0*s_0 + E_1*s_1)**(1/2))/d) 
 		
