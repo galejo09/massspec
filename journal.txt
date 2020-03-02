@@ -124,3 +124,7 @@
 28/02/2020
 - Measurements with 1um and 513nm
 - Fixed formula
+
+02/03/2020
+- 1um and 513nm measurements with chalcogenide glass 
+- Modified massspec 
