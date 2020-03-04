@@ -272,9 +272,9 @@ class AnalyzeAcq:
 
         Right-click to mark a peak with a red circle. 
 
-        :param mz: mass-to-charge ratios (x axis)
+        :param mz: mass-to-charge ratios (x-axis)
         :type: numpy.ndarray
-        :param voltages: voltages (y axis)
+        :param voltages: voltages (y-axis)
         :type: numpy.ndarray
 
         :return: peak coordinates as tuples (x, y)
@@ -360,7 +360,54 @@ class AnalyzeAcq:
         
         if unknown is True:
             for tup in unknowns:
-                peak_index, adduct_mass = tup[0] + 1, tup[1]
+                peak_index, adduct_mass = tup[0]+1, tup[1]
                 print(f"{peak_index} : {adduct_mass}")
           
         return labels
+
+
+        def label_peaks(self, header, mz, voltages, peaks, labels, xlim, ylim, savefig=False):
+            """
+            Generates an annotated spectrum.
+
+            :param header: header of acquisiton file
+            :type: dict
+            :param mz: mass-to-charge ratios (x-axis)
+            :type: numpy.ndarray
+            :param voltages: voltages (y-axis)
+            :type: numpy.ndarray
+            :param peaks: peak coordinates (mz, voltage) as tuples
+            :type: list
+            :param labels: str(label) for each peak in list(peaks); note that peaks and labels are matched by index
+            :type: list
+            :param xlim: range of mass-to-charge ratios (left, right) to plot
+            :type: tuple
+            :param ylim: range of voltages (bottom, top) to plot
+            :type: tuple 
+            :param savefig: if True, the plot will be saved in the working directory
+            :type: bool
+
+            :return: annotated spectrum
+            :type: matplotlib.figure.Figure
+            """
+            plt.figure(figsize=(15, 15))
+            plt.plot(mz, voltages, label=f"Average of {header['nFramesCount'][0]} shots")
+            plt.xlim(xlim[0], xlim[1])
+            plt.ylim(ylim[0], ylim[1])
+            plt.xlabel("$m/z$")
+            plt.ylabel("Relative voltage")
+            plt.legend(loc="upper right")
+
+            label_spacing = 0.01 # labels will be spaced by this amount in the y-direction 
+
+            for i, coord in enumerate(peaks):
+                plt.annotate(labels[i], 
+                    xy=(coord[0], coord[1]), 
+                    ha='center', 
+                    xytext=(coord[0], coord[1]+z), 
+                    size=10, 
+                    arrowprops=dict(arrowstyle="->")
+                )
+                z += 0.01
+
+            plt.show()
