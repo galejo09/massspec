@@ -4,6 +4,9 @@ from os.path import join, getsize, isfile, isdir
 from pathlib import Path
 from dateutil.parser import parse 
 from scipy import signal
+from matplotlib import pyplot as plt
+from matplotlib.patches import Ellipse
+from operator import itemgetter
 
 
 class AnalyzeAcq:
@@ -261,3 +264,103 @@ class AnalyzeAcq:
         :type: numpy.float64
         """
         return np.absolute(h2["t"][0] - h1["t"][0]) / 3600 
+
+
+    def find_peaks(self, mz, voltages):
+        """
+        Enables manual peak annotation and returns the coordinates.
+
+        Right-click to mark a peak with a red circle. 
+
+        :param mz: mass-to-charge ratios (x axis)
+        :type: numpy.ndarray
+        :param voltages: voltages (y axis)
+        :type: numpy.ndarray
+
+        :return: peak coordinates as tuples (x, y)
+        :type: list
+        """
+        coords = []
+        
+        fig, ax = plt.subplots(figsize=(15, 15))
+        ax.plot(mz, voltages, zorder=-1)
+
+
+        def on_click(event):
+            if event.button == 3: # right-click
+                ix, iy = event.xdata, event.ydata
+                dot = Ellipse((ix, iy), width=1.4, height=0.0007, color='r')
+                ax.add_patch(dot)
+                ax.figure.canvas.draw()
+                coords.append((ix,iy))
+        
+
+        fig.canvas.mpl_connect('button_press_event', on_click)
+        fig.show()
+      
+        return coords
+
+
+    def identify_peaks(self, protein, substrate, peaks, protein_index=0, unknown=False):
+        """
+        Returns fragment labels for successfully identified peaks.
+        
+        :param protein: one of ["bradykinin_H", "bradykinin_2H"]
+        :type: string
+        :param substrate: one of ["ITO", "Si", "chalcogenide", "borosilicate"]
+        :type: string
+        :param peaks: peak coordinates (mz, voltage) as tuples
+        :type: list
+        :param protein_index: index of the specified protein within list(peaks); first peak is the default
+        :type: int 
+        :param unknown: if True, - index of peak : mass of adduct - is printed for all unidentified peaks
+        :type: bool
+
+        :return: names of fragments of the specified protein as strings
+        :type: list
+        """
+        proteins = ["bradykinin_H", "bradykinin_2H"]
+
+        susbtrates = ["ITO", "Si", "chalcogenide", "borosilicate"]
+        
+        if protein not in proteins:
+            raise IOError(f"Arg protein must be one of the following: 'bradykinin_H', 'bradykinin_2H'")
+        
+        if substrate not in substrates:
+            raise IOError(f"Arg substrate must be one of the following: 'ITO', 'Si', 'chalcogenide', 'borosilicate'")
+
+        if protein_index not in range(len(peaks)):
+            raise IOError(f"Arg protein_index must be an integer in the range (0, {len(peaks)})")
+
+        labels, unknowns = [], []
+
+        if protein is "bradykinin_H":
+            expected_mass = 1061.23
+            proton = np.absolute(expected_mass - peaks[protein_index][0])
+            if 0 <= proton <= 1:
+                labels.append("[M+H]$^+$")
+                if substrate is "ITO":
+                    masses = {
+                        23 : "[M+Na]$^+$",
+                        39 : "[M+K]$^+$",
+                        64 : "[M+Zn]$^+$" 
+                    }
+            else:
+                raise IOError(f"Peak of index {protein_index} could not be identified as {protein}")
+        
+        mz, voltages = list(zip(*peaks))      
+       
+        for i, mass in enumerate(mz[1:]): 
+            adduct = np.round(mass - mz[protein_index])
+            lower_lim, upper_lim = delta-1, delta+1
+            if adduct in masses.keys() or lower_lim in masses.keys() or upper_lim in masses.keys():
+                labels.append(masses[adduct])
+            else:
+                unknowns.append((i+1, delta))
+        
+        if unknown is True:
+            for tup in unknowns:
+                peak_index, adduct_mass = tup[0] + 1, tup[1]
+                print(f"{peak_index} : {adduct_mass}")
+          
+        return labels
