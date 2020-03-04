@@ -321,7 +321,7 @@ class AnalyzeAcq:
         """
         proteins = ["bradykinin_H", "bradykinin_2H"]
 
-        susbtrates = ["ITO", "Si", "chalcogenide", "borosilicate"]
+        substrates = ["ITO", "Si", "chalcogenide", "borosilicate"]
         
         if protein not in proteins:
             raise IOError(f"Arg protein must be one of the following: 'bradykinin_H', 'bradykinin_2H'")
@@ -329,8 +329,8 @@ class AnalyzeAcq:
         if substrate not in substrates:
             raise IOError(f"Arg substrate must be one of the following: 'ITO', 'Si', 'chalcogenide', 'borosilicate'")
 
-        if protein_index not in range(len(peaks)):
-            raise IOError(f"Arg protein_index must be an integer in the range (0, {len(peaks)})")
+        if protein_index not in range(len(peaks)-1):
+            raise IOError(f"Arg protein_index must be an integer in the range (0, {len(peaks)-1})")
 
         labels, unknowns = [], []
 
