@@ -6,7 +6,6 @@ from dateutil.parser import parse
 from scipy import signal
 from matplotlib import pyplot as plt
 from matplotlib.patches import Ellipse
-from operator import itemgetter
 
 
 class AnalyzeAcq:
