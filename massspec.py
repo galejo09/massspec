@@ -388,8 +388,8 @@ class AnalyzeAcq:
 
         return labels
 
-        def label_peaks(self, header, mz, voltages, peaks,
-                        labels, plotprops, savefig=False):
+    def label_peaks(self, header, mz, voltages, peaks,
+                    labels, plotprops, savefig=False):
             """
             Generates an annotated spectrum.
 
