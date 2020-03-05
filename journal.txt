@@ -132,3 +132,6 @@
 03/03/2020
 - Measurements with borosilica: no signal
 - Started label_peaks 
+
+04/03/2020
+- Worked on massspec
