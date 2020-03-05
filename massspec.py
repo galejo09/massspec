@@ -384,7 +384,8 @@ class AnalyzeAcq:
         if unknown is True:
             for tup in unknowns:
                 peak_index, adduct_mass = tup[0], tup[1]
-                print(f"Peak {peak_index} was unable to be identified. Mass = {adduct_mass}")
+                print(
+                    f"Peak {peak_index} was unable to be identified. Mass = {adduct_mass}")
 
         return labels
 
@@ -420,7 +421,8 @@ class AnalyzeAcq:
             plt.ylabel("Relative voltage")
             plt.legend(loc="upper right")
 
-            z = plotprops["labelspacing"]  # labels will be spaced by this amount in the y-direction
+            # labels will be spaced by this amount in the y-direction
+            z = plotprops["labelspacing"]
 
             for i, coord in enumerate(peaks):
                 plt.annotate(labels[i],
