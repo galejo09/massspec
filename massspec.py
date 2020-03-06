@@ -355,6 +355,7 @@ class AnalyzeAcq:
                         17: "[M-NH$_3$+H]$^+$",
                         23: "[M+Na]$^+$",
                         39: "[M+K]$^+$",
+                        63: "[M+Cu]$^+$"
                     }
             else:
                 raise IOError(
