@@ -425,7 +425,7 @@ class AnalyzeAcq:
         plt.xlabel("$m/z$")
         plt.ylabel("Relative voltage")
         plt.title(plotprops["title"])
-        plt.legend(loc="upper right")
+        plt.legend(loc="upper right", fontsize="large")
 
         # labels will be spaced by this amount in the y-direction
         z = plotprops["labelspacing"]
@@ -435,7 +435,7 @@ class AnalyzeAcq:
                          xy=(coord[0], coord[1]),
                          ha='center',
                          xytext=(coord[0], coord[1] + z),
-                         size=10,
+                         size=20,
                          arrowprops=dict(arrowstyle="->")
                          )
             z += 0.01
