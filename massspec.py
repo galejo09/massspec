@@ -12,13 +12,13 @@ class AnalyzeAcq:
     def __init__(self, directory):
         self.directory = directory
 
-    def load_data(self, date, listfiles=False, subset="all"):
+    def load_data(self, date, listfiles=True, subset="all"):
         """
         Stores file names within the experiment directory.
 
         :param date: date of the experiment in any format
         :type: string
-        :param listfiles: if True, every file name and its index is printed
+        :param listfiles: if True, every file name in arg subset and its index is printed
         :type: bool
         :param subset: list of file names to be stored (e.g. [1, 2] for files 01.signal.div, 02.signal.div); all files stored by default
         :type: list
@@ -33,11 +33,9 @@ class AnalyzeAcq:
         if isdir(full_path) is False:
             raise Exception(f'Folder {d} does not exist')
 
-        if listfiles is True:
-            for i, f in enumerate([file for file in os.listdir(full_path)]):
-                print(f"{i} : {f}")
-
         data = []
+
+        i = 0
 
         if subset is "all":
             for root, dirs, files in os.walk(full_path):
@@ -52,6 +50,9 @@ class AnalyzeAcq:
                     for f in files:
                         if f[:2] == file_no:
                             data.append(str(Path(os.path.join(root, f))))
+                            if listfiles is True:
+                                print(f"{i} : {f}")
+                                i += 1
 
         return data
 
@@ -390,48 +391,57 @@ class AnalyzeAcq:
         return labels
 
     def label_peaks(self, header, mz, voltages, peaks,
-                    labels, plotprops, savefig=False):
-            """
-            Generates an annotated spectrum.
+                    labels, plotprops, savefig=None):
+        """
+        Generates an annotated spectrum.
 
-            :param header: header of acquisiton file
-            :type: dict
-            :param mz: mass-to-charge ratios (x-axis)
-            :type: numpy.ndarray
-            :param voltages: voltages (y-axis)
-            :type: numpy.ndarray
-            :param peaks: peak coordinates (mz, voltage) as tuples
-            :type: list
-            :param labels: str(label) for each peak in list(peaks); note that peaks and labels are matched by index
-            :type: list
-            :param plotprops: properties of the plot; "xlim" : (left, right), "ylim" : (bottom, top), "labelspacing" : float are required items
-            :type: dict
-            :param savefig: if True, the plot will be saved in the working directory
-            :type: bool
+        :param header: header of acquisiton file
+        :type: dict
+        :param mz: mass-to-charge ratios (x-axis)
+        :type: numpy.ndarray
+        :param voltages: voltages (y-axis)
+        :type: numpy.ndarray
+        :param peaks: peak coordinates (mz, voltage) as tuples
+        :type: list
+        :param labels: str(label) for each peak in list(peaks); note that peaks and labels are matched by index
+        :type: list
+        :param plotprops: properties of the plot;
+        {"title" : str,
+        "xlim" : (left, right),
+        "ylim" : (bottom, top),
+        "labelspacing" : float}
+        :param savefig: spectrum will be saved with this file name; if None, the spectrum will not be saved
+        :type: str
 
-            :return: annotated spectrum
-            :type: matplotlib.figure.Figure
-            """
-            plt.figure(figsize=(15, 15))
-            plt.plot(mz, voltages,
-                     label=f"Average of {header['nFramesCount'][0]} shots")
-            plt.xlim(plotprops["xlim"][0], plotprops["xlim"][1])
-            plt.ylim(plotprops["ylim"][0], plotprops["ylim"][1])
-            plt.xlabel("$m/z$")
-            plt.ylabel("Relative voltage")
-            plt.legend(loc="upper right")
+        :return: annotated spectrum
+        :type: matplotlib.figure.Figure
+        """
+        plt.figure(figsize=(15, 15))
+        plt.plot(mz, voltages,
+                 label=f"Average of {header['nFramesCount'][0]} shots")
+        plt.xlim(plotprops["xlim"][0], plotprops["xlim"][1])
+        plt.ylim(plotprops["ylim"][0], plotprops["ylim"][1])
+        plt.xlabel("$m/z$")
+        plt.ylabel("Relative voltage")
+        plt.title(plotprops["title"])
+        plt.legend(loc="upper right")
 
-            # labels will be spaced by this amount in the y-direction
-            z = plotprops["labelspacing"]
+        # labels will be spaced by this amount in the y-direction
+        z = plotprops["labelspacing"]
 
-            for i, coord in enumerate(peaks):
-                plt.annotate(labels[i],
-                             xy=(coord[0], coord[1]),
-                             ha='center',
-                             xytext=(coord[0], coord[1] + z),
-                             size=10,
-                             arrowprops=dict(arrowstyle="->")
-                             )
-                z += 0.01
+        for i, coord in enumerate(peaks):
+            plt.annotate(labels[i],
+                         xy=(coord[0], coord[1]),
+                         ha='center',
+                         xytext=(coord[0], coord[1] + z),
+                         size=10,
+                         arrowprops=dict(arrowstyle="->")
+                         )
+            z += 0.01
 
+        if savefig is None:
             plt.show()
+        elif isinstance(savefig, str):
+            plt.savefig(savefig)
+        else:
+            raise IOError("Arg savefig must be a string ('filename.png')")
