@@ -146,7 +146,7 @@ class AnalyzeAcq:
 
         return spectrum
 
-    def read_frames(self, file, header, subset="all", average=False):
+    def read_frames(self, file, header, subset="all", average=True):
         """
         Returns a list of spectra from the acquisition file.
 
@@ -268,7 +268,7 @@ class AnalyzeAcq:
         """
         return np.absolute(h2["t"][0] - h1["t"][0]) / 3600
 
-    def find_peaks(self, mz, voltages):
+    def find_peaks(self, mz, voltages, display=True):
         """
         Enables manual peak annotation and returns the coordinates.
 
@@ -293,11 +293,12 @@ class AnalyzeAcq:
                 dot = Ellipse((ix, iy), width=1.4, height=0.0007, color='r')
                 ax.add_patch(dot)
                 ax.figure.canvas.draw()
-                coords.append((ix, iy))
+                coords.append((ix, iy))    
+                if display is True:
+                    print(f"{coords.index((ix, iy))} : ({ix}, {iy})")
 
         fig.canvas.mpl_connect('button_press_event', on_click)
-        fig.show()
-
+        
         return coords
 
     def identify_peaks(self, protein, substrate, peaks,
