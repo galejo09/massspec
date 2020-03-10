@@ -146,3 +146,6 @@
 09/03/2020
 - Presented at the meeting
 - Made an experimental theory schematic diagram
+
+10/03/2020
+- Measurements with borosilica and silicon 
