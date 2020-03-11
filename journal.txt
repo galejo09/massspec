@@ -149,3 +149,6 @@
 
 10/03/2020
 - Measurements with borosilica and silicon 
+
+11/03/2020
+- Worked on 16/03/20.ipnyb; plotted yesterday's data
