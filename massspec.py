@@ -293,12 +293,12 @@ class AnalyzeAcq:
                 dot = Ellipse((ix, iy), width=1.4, height=0.0007, color='r')
                 ax.add_patch(dot)
                 ax.figure.canvas.draw()
-                coords.append((ix, iy))    
+                coords.append((ix, iy))
                 if display is True:
                     print(f"{coords.index((ix, iy))} : ({ix}, {iy})")
 
         fig.canvas.mpl_connect('button_press_event', on_click)
-        
+
         return coords
 
     def identify_peaks(self, protein, substrate, peaks,
@@ -336,7 +336,7 @@ class AnalyzeAcq:
             raise IOError(
                 f"Arg substrate must be one of the following: 'ITO', 'Si', 'chalcogenide', 'borosilicate'")
 
-        if protein_index not in range(len(peaks) - 1):
+        if protein_index not in range(len(peaks)):
             raise IOError(
                 f"Arg protein_index must be an integer in the range (0, {len(peaks)-1})")
 
@@ -411,7 +411,7 @@ class AnalyzeAcq:
         "xlim" : (left, right),
         "ylim" : (bottom, top),
         "labelspacing" : float}
-        :param savefig: spectrum will be saved with this file name; if None, the spectrum will not be saved
+        :param savefig: spectrum will be saved with this file name; if None, the spectrum will only be shown
         :type: str
 
         :return: annotated spectrum
@@ -445,4 +445,50 @@ class AnalyzeAcq:
         elif isinstance(savefig, str):
             plt.savefig(savefig)
         else:
-            raise IOError("Arg savefig must be a string ('filename.png')")
+            raise IOError("Arg savefig must be a string (i.e. 'filename.png')")
+
+    def plot_pulse_energies(
+            self, headers, mz, voltages, pulse_energies, plotprops, savefig=None):
+        """
+        Plots spectra from lowest to highest pulse energy in one figure.
+
+        :param headers: the headers of the acquisiton files
+        :type: list
+        :param mz: mass-to-charge ratios of all spectra (x-axis)
+        :type: list
+        :param voltages: voltages of all spectra (y-axis)
+        :type: list
+        :param pulse_energies: pulse energies corresponding to each spectra; note that mz[0], voltages[0], and pulse_energies[0] must refer to the same spectrum
+        :type: list
+        :param plotprops: properties of the plot;
+        {"title" : str,
+        "offset" : float}
+        :type: dict
+        :param savefig: spectrum will be saved with this file name; if None, the spectrum will only be shown
+        :type: str
+
+        :return: spectra in ascending pulse energy
+        :type: matplotlib.figure.Figure
+        """
+        plt.figure(figsize=(15, 15))
+        z = 0
+        for i, x, y in zip(range(len(mz)), mz, voltages):
+            avg = headers[i]['nFramesCount'][0]
+            plt.plot(
+                x,
+                y+z,
+                label=rf"{pulse_energies[i]}$\mu$J, average of {avg} shots")
+            z += plotprops["offset"]
+        plt.yticks([])
+        plt.xlabel("$m/z$")
+        plt.title(plotprops["title"])
+        handles, labels = plt.gca().get_legend_handles_labels()
+        plt.legend(reversed(handles), reversed(labels), loc="upper right")
+
+        if savefig is None:
+            plt.show()
+        elif isinstance(savefig, str):
+            plt.savefig(savefig)
+        else:
+            raise IOError(
+                "Arg savefig must be a string (i.e. 'filename.png')")
