@@ -279,6 +279,7 @@ class AnalyzeAcq:
         }
         plt.rc("font", **font)
         plt.rc("legend", fontsize=24)
+        plt.rc("savefig", bbox='tight', pad_inches=0)
 
     def find_peaks(self, mz, voltages, display=True):
         """
