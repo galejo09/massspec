@@ -152,3 +152,7 @@
 
 11/03/2020
 - Worked on 16/03/20.ipnyb; plotted yesterday's data
+
+12/03/2020
+- Worked on 16/03/20.ipnyb and massspec.py
+- Add more figures to 16/03/2020 slides
