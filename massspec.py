@@ -268,6 +268,18 @@ class AnalyzeAcq:
         """
         return np.absolute(h2["t"][0] - h1["t"][0]) / 3600
 
+    def pub_mode(self):
+        """
+        Sets rc params to produce figures that are formatted for publication. 
+        """
+        font = {
+        "family": "sans-serif",
+        "weight" : "normal",
+        "size" : 18
+        }
+        plt.rc("font", **font)
+        plt.rc("legend", fontsize=24)
+
     def find_peaks(self, mz, voltages, display=True):
         """
         Enables manual peak annotation and returns the coordinates.
