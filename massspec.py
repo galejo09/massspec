@@ -447,10 +447,10 @@ class AnalyzeAcq:
         else:
             raise IOError("Arg savefig must be a string (i.e. 'filename.png')")
 
-    def plot_pulse_energies(
-            self, headers, mz, voltages, pulse_energies, plotprops, savefig=None):
+    def plot_spectra(
+            self, headers, mz, voltages, labels, plotprops, savefig=None):
         """
-        Plots spectra from lowest to highest pulse energy in one figure.
+        Plots multiple spectra in one figure.
 
         :param headers: the headers of the acquisiton files
         :type: list
@@ -458,7 +458,7 @@ class AnalyzeAcq:
         :type: list
         :param voltages: voltages of all spectra (y-axis)
         :type: list
-        :param pulse_energies: pulse energies corresponding to each spectra; note that mz[0], voltages[0], and pulse_energies[0] must refer to the same spectrum
+        :param labels: labels corresponding to each spectra; note that mz[0], voltages[0], and labels[0] must refer to the same spectrum
         :type: list
         :param plotprops: properties of the plot;
         {"title" : str,
@@ -467,7 +467,7 @@ class AnalyzeAcq:
         :param savefig: spectrum will be saved with this file name; if None, the spectrum will only be shown
         :type: str
 
-        :return: spectra in ascending pulse energy
+        :return: several spectra in one figure
         :type: matplotlib.figure.Figure
         """
         plt.figure(figsize=(15, 15))
@@ -477,7 +477,7 @@ class AnalyzeAcq:
             plt.plot(
                 x,
                 y+z,
-                label=rf"{pulse_energies[i]}$\mu$J, average of {avg} shots")
+                label=f"{labels[i]}, average of {avg} shots")
             z += plotprops["offset"]
         plt.yticks([])
         plt.xlabel("$m/z$")
