@@ -156,3 +156,10 @@
 12/03/2020
 - Worked on 16/03/20.ipnyb and massspec.py
 - Add more figures to 16/03/2020 slides
+
+13/03/2020
+- Worked on massspec.py
+
+16/03/2020
+- Set up remote connection
+- Prepared solutions of angiotensin II, endiothelin
