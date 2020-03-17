@@ -163,3 +163,6 @@
 16/03/2020
 - Set up remote connection
 - Prepared solutions of angiotensin II, endiothelin
+
+17/03/2020
+- Set up massspec computer pcx25802 for remote use
