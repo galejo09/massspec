@@ -146,7 +146,8 @@ class AnalyzeAcq:
 
         return spectrum
 
-    def read_frames(self, file, header, subset="all", average=True):
+    def read_frames(self, file, header, subset="all",
+                    laser="PHAROS", average=True):
         """
         Returns a list of spectra from the acquisition file.
 
@@ -154,7 +155,9 @@ class AnalyzeAcq:
         :type: dict
         :param subset: range of frames as a tuple; default is 'all'
         :type: tuple
-        :param average: if True, mean of spectra is returned
+        :param laser: laser used in the experiment; either 'PIRL' (3 micron) or 'PHAROS' (1 micron)
+        :type: str
+        :param average: if True, mean of spectra is returned; if laser = "PIRL", shots with only noise are excluded from the mean
         :type: bool
 
         :return: 2D array of spectra or mean spectrum
@@ -185,7 +188,25 @@ class AnalyzeAcq:
                 "Subset argument must be string 'all' or tuple (start, end)")
 
         if average is True:
-            return np.mean(spectra, axis=0)
+            if laser is "PHAROS":
+                return np.mean(spectra, axis=0)
+            elif laser is "PIRL":
+                # exclude spectra with just noise from the calculation of the
+                # average
+                noise_indices = []
+                total_shots = len(spectra)
+                for i, shot in enumerate(spectra):
+                    if np.max(shot) < 10:
+                        noise_indices.append(i)
+                spectra = [spectra[i]
+                           for i in range(total_shots) if i not in noise_indices]
+                header["nFramesCount"] = np.array([len(spectra)])
+                print(
+                    f"{len(noise_indices)}/{total_shots} spectra are strictly noise.")
+                return np.mean(spectra, axis=0)
+            else:
+                raise IOError(
+                    "Arg laser must be one of: 'PHAROS', 'PIRL'")
 
         return np.asarray(spectra)
 
@@ -270,12 +291,12 @@ class AnalyzeAcq:
 
     def pub_mode(self):
         """
-        Sets rc params to produce figures that are formatted for publication. 
+        Sets rc params to produce figures that are formatted for publication.
         """
         font = {
-        "family": "sans-serif",
-        "weight" : "normal",
-        "size" : 18
+            "family": "sans-serif",
+            "weight": "normal",
+            "size": 18
         }
         plt.rc("font", **font)
         plt.rc("legend", fontsize=24)
@@ -489,7 +510,7 @@ class AnalyzeAcq:
             avg = headers[i]['nFramesCount'][0]
             plt.plot(
                 x,
-                y+z,
+                y + z,
                 label=f"{labels[i]}, average of {avg} shots")
             z += plotprops["offset"]
         plt.yticks([])
