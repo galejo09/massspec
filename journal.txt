@@ -173,3 +173,4 @@
 19/03/2020
 - Updated databases 
 - Plotted PIRL data from 17th and 18th
+- Remove shots of only noise from mean calculation for PIRL data in read_frames
