@@ -166,3 +166,10 @@
 
 17/03/2020
 - Set up massspec computer pcx25802 for remote use
+
+18/03/2020
+- Plotted yesterday's data 
+
+19/03/2020
+- Updated databases 
+- Plotted PIRL data from 17th and 18th
