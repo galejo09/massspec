@@ -174,3 +174,8 @@
 - Updated databases 
 - Plotted PIRL data from 17th and 18th
 - Remove shots of only noise from mean calculation for PIRL data in read_frames
+
+20/03/2020
+- Produced zoomed-in plots for 17th and 18th data
+- Updated databases
+- Plot 19th data: PIRL, PHAROS
