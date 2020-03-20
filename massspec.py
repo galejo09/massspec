@@ -496,6 +496,7 @@ class AnalyzeAcq:
         :type: list
         :param plotprops: properties of the plot;
         {"title" : str,
+        "figsize" : tup,
         "offset" : float}
         :type: dict
         :param savefig: spectrum will be saved with this file name; if None, the spectrum will only be shown
@@ -504,7 +505,7 @@ class AnalyzeAcq:
         :return: several spectra in one figure
         :type: matplotlib.figure.Figure
         """
-        plt.figure(figsize=(15, 15))
+        plt.figure(figsize=plotprops["figsize"])
         z = 0
         for i, x, y in zip(range(len(mz)), mz, voltages):
             avg = headers[i]['nFramesCount'][0]
@@ -522,7 +523,7 @@ class AnalyzeAcq:
         if savefig is None:
             plt.show()
         elif isinstance(savefig, str):
-            plt.savefig(savefig)
+            plt.savefig(savefig, bbox_inches='tight')
         else:
             raise IOError(
                 "Arg savefig must be a string (i.e. 'filename.png')")
