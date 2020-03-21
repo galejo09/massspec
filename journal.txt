@@ -179,3 +179,6 @@
 - Produced zoomed-in plots for 17th and 18th data
 - Updated databases
 - Plot 19th data: PIRL, PHAROS
+
+21/03/2020
+- Plot pulse energies for Mar. 18th, Si
