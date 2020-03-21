@@ -494,10 +494,12 @@ class AnalyzeAcq:
         :type: list
         :param labels: labels corresponding to each spectra; note that mz[0], voltages[0], and labels[0] must refer to the same spectrum
         :type: list
-        :param plotprops: properties of the plot;
+        :param plotprops: properties of the plot; "xlim", "ylim" optional
         {"title" : str,
         "figsize" : tup,
-        "offset" : float}
+        "offset" : float,
+        "xlim" : tup,
+        "ylim" : tup}
         :type: dict
         :param savefig: spectrum will be saved with this file name; if None, the spectrum will only be shown
         :type: str
@@ -512,13 +514,19 @@ class AnalyzeAcq:
             plt.plot(
                 x,
                 y + z,
-                label=f"{labels[i]}, average of {avg} shots")
+                label=f"{labels[i]}, avg. of {avg} shots")
             z += plotprops["offset"]
+        if "xlim" and "ylim" in plotprops:
+            x1, x2 = plotprops["xlim"]
+            y1, y2 = plotprops["ylim"]
+            plt.xlim((x1, x2))
+            plt.ylim((y1, y2))
         plt.yticks([])
         plt.xlabel("$m/z$")
         plt.title(plotprops["title"])
         handles, labels = plt.gca().get_legend_handles_labels()
-        plt.legend(reversed(handles), reversed(labels), loc="upper right")
+        plt.legend(
+            reversed(handles), reversed(labels), loc='upper left', bbox_to_anchor=(1, 1))
 
         if savefig is None:
             plt.show()
