@@ -182,3 +182,10 @@
 
 21/03/2020
 - Plot pulse energies for Mar. 18th, Si
+
+23/03/2020
+- Zoom meeting
+- Re-plotted Si and Chalcogenide data w/ edits and corrections
+- Updated databases
+- Plotted ITO (21st), borosilica (22nd) data
+- Worked on Mar. 26 slides
