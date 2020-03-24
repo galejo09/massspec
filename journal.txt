@@ -189,3 +189,6 @@
 - Updated databases
 - Plotted ITO (21st), borosilica (22nd) data
 - Worked on Mar. 26 slides
+
+24/03/2020
+- Wrote get_pulseE func; still need to test
