@@ -1,11 +1,12 @@
 import numpy as np
 import os
-from os.path import join, getsize, isfile, isdir
+from os.path import isdir
 from pathlib import Path
 from dateutil.parser import parse
 from scipy import signal
 from matplotlib import pyplot as plt
 from matplotlib.patches import Ellipse
+import pandas as pd
 
 
 class AnalyzeAcq:
@@ -70,8 +71,6 @@ class AnalyzeAcq:
             raise Exception(f'The file {file} does not exist.')
         elif file.endswith('.div') is False:
             raise IOError(f'The file must have a .div extension')
-        else:
-            f = np.fromfile(file, count=-1)
 
         params = ['uuid', 'nVersion', 't', 'nFramesCount', 'uLen', 'u1Pos', 'dHighV',
                   'dLowV', 'nFrameSize', 'nSize270', '1AcqFile', 'dThreshold1', 'dSamplingPeriod']
@@ -480,6 +479,60 @@ class AnalyzeAcq:
             plt.savefig(savefig)
         else:
             raise IOError("Arg savefig must be a string (i.e. 'filename.png')")
+
+    def get_pulse_energies(self, date, wavelength):
+        """
+        Retrieves pulse energy measurements for specified date and wavelength.
+
+        :param date: date of the experiment in any format
+        :type: str
+        :param wavelength: wavelength in nm; one of '1026', '513', '342'
+        :type: str
+
+        :return: dictionary of format {'PHAROS GUI power in mW' : 'Measured pulse energy in uJ'}
+        :type: dict
+        """
+        d_format = parse(date)
+        date = f"{d_format.year}-{d_format:%m}-{d_format:%d}"
+
+        df_metadata = pd.read_csv(self.directory + "\\TOFDatabase.csv")
+        df_powers = pd.read_csv(
+            self.directory +
+            "\\power_measurements.csv",
+            keep_default_na=False)
+
+        metadata = df_metadata[df_metadata.date == date]
+
+        wavelengths = metadata['wavelengths'].tolist()[0]
+
+        if wavelength not in wavelengths:
+            raise IOError(
+                f"Wavelength {wavelength} was not used on {date}. Choose one of {wavelengths}.")
+
+        all_powers = df_powers[df_powers.date == date]
+
+        if wavelength is "1026":
+            powers = all_powers.iloc[:, 3:16]
+        elif wavelength is "513":
+            powers = all_powers.iloc[:, 17:29]
+        elif wavelength is "342":
+            powers = all_powers.iloc[:, 30:]
+
+        cols = powers.columns.tolist()
+
+        if wavelength is "513" or "342":
+            for ind, val in enumerate(cols):
+                cols[ind] = val[:4]
+
+        powervals = powers.values.tolist()[0]
+
+        dict_powers = dict(zip(cols, powervals))
+
+        for power, pulseE in dict_powers.items():
+            if dict_powers[power] is not "":
+                dict_powers[power] = str(pulseE) + r' $\mu$J'
+
+        return dict_powers
 
     def plot_spectra(
             self, headers, mz, voltages, labels, plotprops, savefig=None):
