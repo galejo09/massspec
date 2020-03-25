@@ -192,3 +192,7 @@
 
 24/03/2020
 - Wrote get_pulseE func; still need to test
+
+25/03/2020
+- Tested get_pulse_energies 
+- Analyzed Mar. 18-22 513 nm data
