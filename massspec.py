@@ -298,19 +298,23 @@ class AnalyzeAcq:
             "size": 18
         }
         plt.rc("font", **font)
-        plt.rc("legend", fontsize=24)
+        plt.rc("legend", fontsize='medium')
         plt.rc("savefig", bbox='tight', pad_inches=0)
 
-    def find_peaks(self, mz, voltages, display=True):
+    def find_peaks(self, mz, voltages, offset=0, display=True):
         """
         Enables manual peak annotation and returns the coordinates.
 
         Right-click to mark a peak with a red circle.
 
         :param mz: mass-to-charge ratios (x-axis)
-        :type: numpy.ndarray
+        :type: numpy.ndarray (or list to plot multiple spectra)
         :param voltages: voltages (y-axis)
-        :type: numpy.ndarray
+        :type: numpy.ndarray (or list to plot multiple spectra)
+        :param offset: space between each plot if plotting more than one spectra; must have same units as voltages
+        :type: float
+        :param display: if True, peak coordinates are printed
+        :type: bool
 
         :return: peak coordinates as tuples (x, y)
         :type: list
@@ -318,7 +322,16 @@ class AnalyzeAcq:
         coords = []
 
         fig, ax = plt.subplots(figsize=(15, 15))
-        ax.plot(mz, voltages, zorder=-1)
+        if isinstance(mz, list) and isinstance(voltages, list):
+            z = 0
+            for x, y in zip(mz, voltages):
+                ax.plot(
+                    x,
+                    y + z,
+                    zorder=-1)
+                z += offset
+        else:
+            ax.plot(mz, voltages, zorder=-1)
 
         def on_click(event):
             if event.button == 3:  # right-click
@@ -334,15 +347,17 @@ class AnalyzeAcq:
 
         return coords
 
-    def identify_peaks(self, protein, substrate, peaks,
+    def identify_peaks(self, peaks, protein='', substrate='',
                        protein_index=0, unknown=False):
         """
         Returns fragment labels for successfully identified peaks. Peaks that cannot be identified are returned with
         a label of the following format "unknown: {mass of adduct}".
 
-        :param protein: one of ["bradykinin_H", "bradykinin_2H"]
+        Leave protein and substrate as empty strings for general identification of unknown peaks, e.g. label without reference to a protein and without mass-to-charge correction for substrate.
+
+        :param protein: one of ["", "bradykinin_H", "bradykinin_2H"]
         :type: string
-        :param substrate: one of ["ITO", "Si", "chalcogenide", "borosilicate"]
+        :param substrate: one of ["", "ITO", "Si", "chalcogenide", "borosilicate"]
         :type: string
         :param peaks: peak coordinates (mz, voltage) as tuples
         :type: list
@@ -351,23 +366,24 @@ class AnalyzeAcq:
         :param unknown: if True, the index of the peak and the mass of the corresponding adduct are printed for all unidentified peaks
         :type: bool
 
-        :return: names of fragments of the specified protein as strings
+        :return: names of each adduct with the specified protein (known peaks) and/or mass-to-charge ratios (unknown peaks) as strings
         :type: list
         """
         proteins = {
+            "": None,
             "bradykinin_H": "[M+H]$^+$",
             "bradykinin_2H": "[M+2H]$^{2+}$"
         }
 
-        substrates = ["ITO", "Si", "chalcogenide", "borosilicate"]
+        substrates = ["", "ITO", "Si", "chalcogenide", "borosilicate"]
 
         if protein not in proteins.keys():
             raise IOError(
-                f"Arg protein must be one of the following: 'bradykinin_H', 'bradykinin_2H'")
+                f"Arg protein must be one of the following: '', 'bradykinin_H', 'bradykinin_2H'")
 
         if substrate not in substrates:
             raise IOError(
-                f"Arg substrate must be one of the following: 'ITO', 'Si', 'chalcogenide', 'borosilicate'")
+                f"Arg substrate must be one of the following: '', 'ITO', 'Si', 'chalcogenide', 'borosilicate'")
 
         if protein_index not in range(len(peaks)):
             raise IOError(
@@ -398,23 +414,27 @@ class AnalyzeAcq:
 
         mz, voltages = list(zip(*peaks))
 
-        for i, mass in enumerate(mz):
-            if i is protein_index:
-                continue
-            else:
-                adduct = np.absolute(np.round(mass - mz[protein_index]))
-                lower_lim, upper_lim = adduct - 1, adduct + 1
-                if adduct in masses.keys():
-                    labels.append(masses[adduct])
-                elif lower_lim in masses.keys():
-                    labels.append(masses[lower_lim])
-                elif upper_lim in masses.keys():
-                    labels.append(masses[upper_lim])
+        if protein is "" and substrate is "":
+            for i, mass in enumerate(mz):
+                unknowns.append((i, mass))
+                labels.append(f"{mass:.1f}")
+        else:
+            for i, mass in enumerate(mz):
+                if i is protein_index:
+                    continue
                 else:
-                    unknowns.append((i, adduct))
-                    labels.append(f"unknown: {adduct}")
-
-        labels.insert(protein_index, proteins[protein])
+                    adduct = np.absolute(np.round(mass - mz[protein_index]))
+                    lower_lim, upper_lim = adduct - 1, adduct + 1
+                    if adduct in masses.keys():
+                        labels.append(masses[adduct])
+                    elif lower_lim in masses.keys():
+                        labels.append(masses[lower_lim])
+                    elif upper_lim in masses.keys():
+                        labels.append(masses[upper_lim])
+                    else:
+                        unknowns.append((i, adduct))
+                        labels.append(f"unknown: {adduct}")
+            labels.insert(protein_index, proteins[protein])
 
         if unknown is True:
             for tup in unknowns:
@@ -425,7 +445,7 @@ class AnalyzeAcq:
         return labels
 
     def label_peaks(self, header, mz, voltages, peaks,
-                    labels, plotprops, savefig=None):
+                    peak_labels, legend_labels, plotprops, savefig=None):
         """
         Generates an annotated spectrum.
 
@@ -437,46 +457,62 @@ class AnalyzeAcq:
         :type: numpy.ndarray
         :param peaks: peak coordinates (mz, voltage) as tuples
         :type: list
-        :param labels: str(label) for each peak in list(peaks); note that peaks and labels are matched by index
+        :param peak_labels: str(label) for each peak in list(peaks); note that peaks and labels are matched by index
+        :type: list
+        :param legend_labels: str(label) for each plot if plotting more than one spectra
         :type: list
         :param plotprops: properties of the plot;
         {"title" : str,
+        "figsize" : tup,
         "xlim" : (left, right),
         "ylim" : (bottom, top),
+        "offset" : float
         "labelspacing" : float}
+        :type: dict
         :param savefig: spectrum will be saved with this file name; if None, the spectrum will only be shown
         :type: str
 
         :return: annotated spectrum
         :type: matplotlib.figure.Figure
         """
-        plt.figure(figsize=(15, 15))
-        plt.plot(mz, voltages,
-                 label=f"Average of {header['nFramesCount'][0]} shots")
+        plt.figure(figsize=plotprops["figsize"])
+        if isinstance(mz, list) and isinstance(voltages, list):
+            z = 0
+            for i, x, y in zip(range(len(mz)), mz, voltages):
+                plt.plot(
+                    x,
+                    y + z,
+                    label=legend_labels[i])
+                z += plotprops["offset"]
+            handles, labels = plt.gca().get_legend_handles_labels()
+            plt.legend(
+                reversed(handles), reversed(labels), loc='upper left', bbox_to_anchor=(1, 1))
+        else:
+            plt.plot(mz, voltages,
+                     label=f"Average of {header['nFramesCount'][0]} shots")
+            plt.legend(loc="upper right", fontsize="medium")
         plt.xlim(plotprops["xlim"][0], plotprops["xlim"][1])
         plt.ylim(plotprops["ylim"][0], plotprops["ylim"][1])
         plt.xlabel("$m/z$")
         plt.ylabel("Relative voltage")
         plt.title(plotprops["title"])
-        plt.legend(loc="upper right", fontsize="large")
 
-        # labels will be spaced by this amount in the y-direction
-        z = plotprops["labelspacing"]
+        labelspacing = 0.1
 
         for i, coord in enumerate(peaks):
-            plt.annotate(labels[i],
+            plt.annotate(peak_labels[i],
                          xy=(coord[0], coord[1]),
                          ha='center',
-                         xytext=(coord[0], coord[1] + z),
-                         size=20,
+                         xytext=(coord[0], coord[1] + labelspacing),
+                         size=14,
                          arrowprops=dict(arrowstyle="->")
                          )
-            z += 0.01
+            labelspacing += plotprops["labelspacing"]
 
         if savefig is None:
             plt.show()
         elif isinstance(savefig, str):
-            plt.savefig(savefig)
+            plt.savefig(savefig, bbox_inches='tight')
         else:
             raise IOError("Arg savefig must be a string (i.e. 'filename.png')")
 
