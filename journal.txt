@@ -196,3 +196,6 @@
 25/03/2020
 - Tested get_pulse_energies 
 - Analyzed Mar. 18-22 513 nm data
+
+26/03/2020
+- Plotted 4 substrates and labeled unknown peaks
