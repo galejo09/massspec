@@ -203,3 +203,7 @@
 27/03/2020
 - Updated databases with Mar. 26 data
 - Plot blanks
+
+29/03/2020
+- Plotted flight times comparison
+- Went over the 1um slides with Andrey
