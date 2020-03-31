@@ -207,3 +207,6 @@
 29/03/2020
 - Plotted flight times comparison
 - Went over the 1um slides with Andrey
+
+30/03/2020
+- Presented at Zoom meeting (1 um Cryo MS)
