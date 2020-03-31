@@ -212,5 +212,5 @@
 - Presented at Zoom meeting (1 um Cryo MS)
 
 31/03/2020
-- Plotted labeled fragments of M+2H bradykinin
+- Plotted labeled fragments of M+2H bradykinin, 700-900 range, M+H bradykinin
 - Tried to identify fragments in 200-400 range, 1000-1200 range
