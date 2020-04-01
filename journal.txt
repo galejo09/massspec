@@ -214,3 +214,7 @@
 31/03/2020
 - Plotted labeled fragments of M+2H bradykinin, 700-900 range, M+H bradykinin
 - Tried to identify fragments in 200-400 range, 1000-1200 range
+
+01/04/2020
+- Made edits to the ITO fragments plots
+- Worked on 513 nm + fragmentation presentation
