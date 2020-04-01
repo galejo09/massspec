@@ -18,7 +18,7 @@ class AnalyzeAcq:
         Stores file names within the experiment directory.
 
         :param date: date of the experiment in any format
-        :type: string
+        :type: str
         :param listfiles: if True, every file name in arg subset and its index is printed
         :type: bool
         :param subset: list of file names to be stored (e.g. [1, 2] for files 01.signal.div, 02.signal.div); all files stored by default
@@ -72,11 +72,35 @@ class AnalyzeAcq:
         elif file.endswith('.div') is False:
             raise IOError(f'The file must have a .div extension')
 
-        params = ['uuid', 'nVersion', 't', 'nFramesCount', 'uLen', 'u1Pos', 'dHighV',
-                  'dLowV', 'nFrameSize', 'nSize270', '1AcqFile', 'dThreshold1', 'dSamplingPeriod']
+        params = [
+            'uuid',
+            'nVersion',
+            't',
+            'nFramesCount',
+            'uLen',
+            'u1Pos',
+            'dHighV',
+            'dLowV',
+            'nFrameSize',
+            'nSize270',
+            '1AcqFile',
+            'dThreshold1',
+            'dSamplingPeriod']
 
-        dtypes = [np.uint8, np.int, np.uint32, np.int, np.uint32, np.uint64,
-                  np.float64, np.float64, np.int32, np.int32, np.int32, np.float64, np.float64]
+        dtypes = [
+            np.uint8,
+            np.int,
+            np.uint32,
+            np.int,
+            np.uint32,
+            np.uint64,
+            np.float64,
+            np.float64,
+            np.int32,
+            np.int32,
+            np.int32,
+            np.float64,
+            np.float64]
 
         counts = [16, 1, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
 
@@ -91,12 +115,15 @@ class AnalyzeAcq:
             data['nCommentLen'] = np.fromfile(
                 file, dtype=np.int32, count=1, offset=88)  # comment length
             data['szComment'] = np.fromfile(
-                file, dtype=np.uint8, count=data['nCommentLen'][0], offset=92)  # comment string
+                file,
+                dtype=np.uint8,
+                count=data['nCommentLen'][0],
+                offset=92)  # comment string
 
         data['u1Size'] = os.path.getsize(
             file)  # size of the file in bytes
 
-        if display == True:
+        if display:
             for key, value in data.items():
                 print(f'{key} : {value}')
 
@@ -140,8 +167,8 @@ class AnalyzeAcq:
 
         # convert bytes to volts; the equivalent MATLAB script is byte2volts
         int8max = np.float64(127)  # originally double(int8(2^7)) in MATLAB
-        spectrum = -(((header['dHighV'] - header['dLowV']) /
-                      (2.0 * int8max)) * (spectrum + int8max) + header['dLowV'])
+        spectrum = -(((header['dHighV'] - header['dLowV']) / \
+                     (2.0 * int8max)) * (spectrum + int8max) + header['dLowV'])
 
         return spectrum
 
@@ -351,14 +378,15 @@ class AnalyzeAcq:
                        protein_index=0, unknown=False):
         """
         Returns fragment labels for successfully identified peaks. Peaks that cannot be identified are returned with
-        a label of the following format "unknown: {mass of adduct}".
+        a label of the following format: "unknown adduct: {mass of adduct}" for M+H and "{mass}" for M+2H.
 
-        Leave protein and substrate as empty strings for general identification of unknown peaks, e.g. label without reference to a protein and without mass-to-charge correction for substrate.
+        Leave protein and substrate as empty strings for general identification of unknown peaks, e.g. label without
+        reference to a protein and without mass-to-charge correction for substrate.
 
         :param protein: one of ["", "bradykinin_H", "bradykinin_2H"]
-        :type: string
+        :type: str
         :param substrate: one of ["", "ITO", "Si", "chalcogenide", "borosilicate"]
-        :type: string
+        :type: str
         :param peaks: peak coordinates (mz, voltage) as tuples
         :type: list
         :param protein_index: index of the specified protein within list(peaks); first peak is the default
@@ -366,7 +394,7 @@ class AnalyzeAcq:
         :param unknown: if True, the index of the peak and the mass of the corresponding adduct are printed for all unidentified peaks
         :type: bool
 
-        :return: names of each adduct with the specified protein (known peaks) and/or mass-to-charge ratios (unknown peaks) as strings
+        :return: fragment labels of the format str({name} ({mass}) \n theory: {theoretical mass}) (known peaks) and/or mass-to-charge ratios (unknown peaks)
         :type: list
         """
         proteins = {
@@ -391,15 +419,18 @@ class AnalyzeAcq:
 
         labels, unknowns = [], []
 
+        # fragments are identified by adduct
         if protein is "bradykinin_H":
-            expected_mass = 1061.23
-            proton = np.absolute(expected_mass - peaks[protein_index][0])
-            if 0 <= proton <= 1:
+            M_H = peaks[protein_index][0]
+            M_H_expected_mass = 1061.23
+            delta = np.absolute(M_H_expected_mass - M_H)
+            if 0 <= delta <= 3:  # the expected and experimental masses must only differ by 3 m/z
                 if substrate is "ITO":
                     masses = {
                         23: "[M+Na]$^+$",
                         39: "[M+K]$^+$",
-                        64: "[M+Zn]$^+$"
+                        64: "[M+Zn]$^+$",
+                        -45: "-COOH"
                     }
                 if substrate is "Si":
                     masses = {
@@ -407,6 +438,27 @@ class AnalyzeAcq:
                         23: "[M+Na]$^+$",
                         39: "[M+K]$^+$",
                         63: "[M+Cu]$^+$"
+                    }
+        # fragments are identified by mass
+        elif protein is "bradykinin_2H":
+            M_2H = peaks[protein_index][0]
+            M_2H_expected_mass = 531.12
+            delta = np.absolute(M_2H_expected_mass - M_2H)
+            if 0 <= delta <= 3:  # the expected and experimental masses must only differ by 3 m/z
+                if substrate is "ITO":
+                    masses = {
+                        417.48: "y$_3$",
+                        446.51: "x$_3$+1",
+                        474.54: "v$_4$",
+                        553: "b$_5$",
+                        572.69: "c$_5$+2",
+                        598.72: "d$_6$",
+                        614.72: "a$_6$",
+                        642.73: "b$_6$",
+                        711.84: "a$_7$",
+                        859.02: "a$_8$",
+                        885: "b$_8$",
+                        903.02: "y$_8$"
                     }
             else:
                 raise IOError(
@@ -417,35 +469,63 @@ class AnalyzeAcq:
         if protein is "" and substrate is "":
             for i, mass in enumerate(mz):
                 unknowns.append((i, mass))
-                labels.append(f"{mass:.1f}")
-        else:
+                labels.append(f"{mass:.2f}")
+        elif protein is "bradykinin_H":
             for i, mass in enumerate(mz):
                 if i is protein_index:
                     continue
                 else:
-                    adduct = np.absolute(np.round(mass - mz[protein_index]))
+                    adduct = np.round(mass - mz[protein_index])
+                    # the adduct must be +/- 1 its theorectical mass
                     lower_lim, upper_lim = adduct - 1, adduct + 1
                     if adduct in masses.keys():
-                        labels.append(masses[adduct])
+                        labels.append(masses[adduct] + f" ({mass:.2f})")
                     elif lower_lim in masses.keys():
-                        labels.append(masses[lower_lim])
+                        labels.append(masses[lower_lim] + f" ({mass:.2f})")
                     elif upper_lim in masses.keys():
-                        labels.append(masses[upper_lim])
+                        labels.append(masses[upper_lim] + f" ({mass:.2f})")
                     else:
-                        unknowns.append((i, adduct))
-                        labels.append(f"unknown: {adduct}")
-            labels.insert(protein_index, proteins[protein])
+                        unknowns.append((i, mass))
+                        labels.append(f"unknown adduct: {adduct}")
+            labels.insert(
+                protein_index,
+                proteins[protein] +
+                f" ({M_H:.2f})" +
+                f"\n theory: {M_H_expected_mass}")
+        elif protein is "bradykinin_2H":
+            for i, mass in enumerate(mz):
+                if i is protein_index:
+                    continue
+                else:
+                    # the fragments must +/- 3 its theroretical mass
+                    lower_lim, upper_lim = mass - 3, mass + 3
+                    identified = False
+                    for theory_mass in masses.keys():
+                        if theory_mass > lower_lim and theory_mass < upper_lim:
+                            labels.append(
+                                masses[theory_mass] +
+                                f" ({mass:.2f})" +
+                                f"\n theory: {theory_mass}")
+                            identified = True
+                    if identified is False:
+                        unknowns.append((i, mass))
+                        labels.append(f"{mass:.2f}")
+            labels.insert(
+                protein_index,
+                proteins[protein] +
+                f" ({M_2H:.2f})" +
+                f"\n theory: {M_2H_expected_mass}")
 
         if unknown is True:
             for tup in unknowns:
-                peak_index, adduct_mass = tup[0], tup[1]
+                peak_index, mass = tup[0], tup[1]
                 print(
                     f"Peak {peak_index} was unable to be identified. Mass = {adduct_mass}")
 
         return labels
 
     def label_peaks(self, header, mz, voltages, peaks,
-                    peak_labels, legend_labels, plotprops, savefig=None):
+                    peak_labels, plotprops, legend_labels=[], savefig=None):
         """
         Generates an annotated spectrum.
 
@@ -467,7 +547,8 @@ class AnalyzeAcq:
         "xlim" : (left, right),
         "ylim" : (bottom, top),
         "offset" : float
-        "labelspacing" : float}
+        "labelspacing" : float,
+        "labelsize" : float}
         :type: dict
         :param savefig: spectrum will be saved with this file name; if None, the spectrum will only be shown
         :type: str
@@ -486,25 +567,30 @@ class AnalyzeAcq:
                 z += plotprops["offset"]
             handles, labels = plt.gca().get_legend_handles_labels()
             plt.legend(
-                reversed(handles), reversed(labels), loc='upper left', bbox_to_anchor=(1, 1))
+                reversed(handles),
+                reversed(labels),
+                loc='upper left',
+                bbox_to_anchor=(
+                    1,
+                    1))
         else:
             plt.plot(mz, voltages,
                      label=f"Average of {header['nFramesCount'][0]} shots")
-            plt.legend(loc="upper right", fontsize="medium")
+            plt.legend(loc='upper left', fontsize='medium')
         plt.xlim(plotprops["xlim"][0], plotprops["xlim"][1])
         plt.ylim(plotprops["ylim"][0], plotprops["ylim"][1])
         plt.xlabel("$m/z$")
         plt.ylabel("Relative voltage")
         plt.title(plotprops["title"])
 
-        labelspacing = 0.1
+        labelspacing = 0.005
 
         for i, coord in enumerate(peaks):
             plt.annotate(peak_labels[i],
                          xy=(coord[0], coord[1]),
                          ha='center',
                          xytext=(coord[0], coord[1] + labelspacing),
-                         size=14,
+                         size=plotprops["labelsize"],
                          arrowprops=dict(arrowstyle="->")
                          )
             labelspacing += plotprops["labelspacing"]
@@ -615,7 +701,12 @@ class AnalyzeAcq:
         plt.title(plotprops["title"])
         handles, labels = plt.gca().get_legend_handles_labels()
         plt.legend(
-            reversed(handles), reversed(labels), loc='upper left', bbox_to_anchor=(1, 1))
+            reversed(handles),
+            reversed(labels),
+            loc='upper left',
+            bbox_to_anchor=(
+                1,
+                1))
 
         if savefig is None:
             plt.show()
