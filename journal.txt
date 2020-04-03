@@ -218,3 +218,7 @@
 01/04/2020
 - Made edits to the ITO fragments plots
 - Worked on 513 nm + fragmentation presentation
+
+03/04/2020
+- Plotted Si fragments
+- Worked on 513 nm + fragmentation presentation
