@@ -375,7 +375,7 @@ class AnalyzeAcq:
         return coords
 
     def identify_peaks(self, peaks, protein='', substrate='',
-                       protein_index=0, unknown=False):
+                       protein_index=None, unknown=False):
         """
         Returns fragment labels for successfully identified peaks. Peaks that cannot be identified are returned with
         a label of the following format: "unknown adduct: {mass of adduct}" for M+H and "{mass}" for M+2H.
@@ -389,7 +389,7 @@ class AnalyzeAcq:
         :type: str
         :param peaks: peak coordinates (mz, voltage) as tuples
         :type: list
-        :param protein_index: index of the specified protein within list(peaks); first peak is the default
+        :param protein_index: index of the specified protein within list(peaks); if protein peak is not present, set to None
         :type: int
         :param unknown: if True, the index of the peak and the mass of the corresponding adduct are printed for all unidentified peaks
         :type: bool
@@ -413,10 +413,6 @@ class AnalyzeAcq:
             raise IOError(
                 f"Arg substrate must be one of the following: '', 'ITO', 'Si', 'chalcogenide', 'borosilicate'")
 
-        if protein_index not in range(len(peaks)):
-            raise IOError(
-                f"Arg protein_index must be an integer in the range (0, {len(peaks)-1})")
-
         labels, unknowns = [], []
 
         # fragments are identified by adduct
@@ -427,42 +423,46 @@ class AnalyzeAcq:
             if 0 <= delta <= 3:  # the expected and experimental masses must only differ by 3 m/z
                 if substrate is "ITO":
                     masses = {
+                        -45: "-COOH",
                         23: "[M+Na]$^+$",
                         39: "[M+K]$^+$",
-                        64: "[M+Zn]$^+$",
-                        -45: "-COOH"
+                        64: "[M+Zn]$^+$"
                     }
                 if substrate is "Si":
                     masses = {
-                        17: "[M-NH$_3$+H]$^+$",
+                        -17: "-NH$_3$",
                         23: "[M+Na]$^+$",
                         39: "[M+K]$^+$",
-                        63: "[M+Cu]$^+$"
+                        64: "[M+Zn]$^+$"
                     }
         # fragments are identified by mass
         elif protein is "bradykinin_2H":
-            M_2H = peaks[protein_index][0]
-            M_2H_expected_mass = 531.12
-            delta = np.absolute(M_2H_expected_mass - M_2H)
-            if 0 <= delta <= 3:  # the expected and experimental masses must only differ by 3 m/z
-                if substrate is "ITO":
-                    masses = {
-                        417.48: "y$_3$",
-                        446.51: "x$_3$+1",
-                        474.54: "v$_4$",
-                        553: "b$_5$",
-                        572.69: "c$_5$+2",
-                        598.72: "d$_6$",
-                        614.72: "a$_6$",
-                        642.73: "b$_6$",
-                        711.84: "a$_7$",
-                        859.02: "a$_8$",
-                        885: "b$_8$",
-                        903.02: "y$_8$"
-                    }
-            else:
-                raise IOError(
-                    f"Peak of index {protein_index} could not be identified as {protein}")
+            if protein_index is not None:
+                M_2H = peaks[protein_index][0]
+                M_2H_expected_mass = 531.12
+                delta = np.absolute(M_2H_expected_mass - M_2H)
+                if 0 <= delta <= 3:  # the expected and experimental masses must only differ by 3 m/z
+                    pass
+                else:
+                    raise IOError(
+                        f"Peak of index {protein_index} could not be identified as {protein}")
+            masses = {
+                417.48: "y$_3$",
+                425.51: "c$_4$+2",
+                446.51: "x$_3$+1",
+                474.54: "v$_4$",
+                527.65: "a$_5$",
+                553: "b$_5$",
+                572.69: "c$_5$+2",
+                598.72: "d$_6$",
+                614.72: "a$_6$",
+                637.73: "z$_5$+1",
+                642.73: "b$_6$",
+                711.84: "a$_7$",
+                859.02: "a$_8$",
+                885: "b$_8$",
+                903.02: "y$_8$"
+            }
 
         mz, voltages = list(zip(*peaks))
 
@@ -510,11 +510,12 @@ class AnalyzeAcq:
                     if identified is False:
                         unknowns.append((i, mass))
                         labels.append(f"{mass:.2f}")
-            labels.insert(
-                protein_index,
-                proteins[protein] +
-                f" ({M_2H:.2f})" +
-                f"\n theory: {M_2H_expected_mass}")
+            if protein_index is not None:
+                labels.insert(
+                    protein_index,
+                    proteins[protein] +
+                    f" ({M_2H:.2f})" +
+                    f"\n theory: {M_2H_expected_mass}")
 
         if unknown is True:
             for tup in unknowns:
