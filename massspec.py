@@ -419,8 +419,9 @@ class AnalyzeAcq:
         if protein is "bradykinin_H":
             M_H = peaks[protein_index][0]
             M_H_expected_mass = 1061.23
-            delta = np.absolute(M_H_expected_mass - M_H)
-            if 0 <= delta <= 3:  # the expected and experimental masses must only differ by 3 m/z
+            delta = np.absolute(M_H - M_H_expected_mass)
+            percent_error = delta/M_H_expected_mass * 100
+            if 0 <= percent_error <= 1:  
                 if substrate is "ITO":
                     masses = {
                         -45: "-COOH",
@@ -432,21 +433,30 @@ class AnalyzeAcq:
                     masses = {
                         -17: "-NH$_3$",
                         23: "[M+Na]$^+$",
-                        39: "[M+K]$^+$",
-                        64: "[M+Zn]$^+$"
+                        39: "[M+K]$^+$"
+                    }
+                if substrate is "chalcogenide":
+                    masses = {
+                        -45: "-COOH",
+                        23: "[M+Na]$^+$",
+                        39: "[M+K]$^+$"
                     }
         # fragments are identified by mass
         elif protein is "bradykinin_2H":
             if protein_index is not None:
                 M_2H = peaks[protein_index][0]
                 M_2H_expected_mass = 531.12
-                delta = np.absolute(M_2H_expected_mass - M_2H)
-                if 0 <= delta <= 3:  # the expected and experimental masses must only differ by 3 m/z
+                delta = np.absolute(M_2H - M_2H_expected_mass)
+                percent_error = delta/M_2H_expected_mass * 100
+                if 0 <= percent_error <= 1:  
                     pass
                 else:
                     raise IOError(
                         f"Peak of index {protein_index} could not be identified as {protein}")
             masses = {
+                307: "z$_2$",
+                323.42: "a$_3$",
+                404: "z$_3$",
                 417.48: "y$_3$",
                 425.51: "c$_4$+2",
                 446.51: "x$_3$+1",
@@ -461,6 +471,7 @@ class AnalyzeAcq:
                 711.84: "a$_7$",
                 859.02: "a$_8$",
                 885: "b$_8$",
+                900: "c$_8$",
                 903.02: "y$_8$"
             }
 
@@ -475,18 +486,19 @@ class AnalyzeAcq:
                 if i is protein_index:
                     continue
                 else:
-                    adduct = np.round(mass - mz[protein_index])
-                    # the adduct must be +/- 1 its theorectical mass
-                    lower_lim, upper_lim = adduct - 1, adduct + 1
-                    if adduct in masses.keys():
-                        labels.append(masses[adduct] + f" ({mass:.2f})")
-                    elif lower_lim in masses.keys():
-                        labels.append(masses[lower_lim] + f" ({mass:.2f})")
-                    elif upper_lim in masses.keys():
-                        labels.append(masses[upper_lim] + f" ({mass:.2f})")
-                    else:
+                    adduct = mass - mz[protein_index]
+                    identified = False
+                    for theory_mass in masses.keys():
+                        upper_lim = (0.01 * theory_mass) + theory_mass
+                        lower_lim = -(0.01 * theory_mass) + theory_mass
+                        if adduct > lower_lim and adduct < upper_lim:
+                            labels.append(
+                                    masses[theory_mass] +
+                                    f" ({mass:.2f})")
+                            identified = True
+                    if identified is False:
                         unknowns.append((i, mass))
-                        labels.append(f"unknown adduct: {adduct}")
+                        labels.append(f"unknown adduct: {adduct:.2f}")
             labels.insert(
                 protein_index,
                 proteins[protein] +
@@ -497,11 +509,11 @@ class AnalyzeAcq:
                 if i is protein_index:
                     continue
                 else:
-                    # the fragments must +/- 3 its theroretical mass
-                    lower_lim, upper_lim = mass - 3, mass + 3
                     identified = False
                     for theory_mass in masses.keys():
-                        if theory_mass > lower_lim and theory_mass < upper_lim:
+                        upper_lim = (0.01 * theory_mass) + theory_mass
+                        lower_lim = -(0.01 * theory_mass) + theory_mass
+                        if mass > lower_lim and mass < upper_lim:
                             labels.append(
                                 masses[theory_mass] +
                                 f" ({mass:.2f})" +
