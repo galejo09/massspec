@@ -225,3 +225,6 @@
 
 06/04/2020
 - Zoom meeting; presented 513 nm + fragmentation slides
+
+08/04/2020
+- Plotted chalcogenide fragmentation
