@@ -222,3 +222,6 @@
 03/04/2020
 - Plotted Si fragments
 - Worked on 513 nm + fragmentation presentation
+
+06/04/2020
+- Zoom meeting; presented 513 nm + fragmentation slides
