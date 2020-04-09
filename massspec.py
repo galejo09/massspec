@@ -38,7 +38,7 @@ class AnalyzeAcq:
 
         i = 0
 
-        if subset is "all":
+        if subset == "all":
             for root, dirs, files in os.walk(full_path):
                 for f in files:
                     if 'div' in f:
@@ -193,7 +193,7 @@ class AnalyzeAcq:
 
         spectra = []
 
-        if subset is "all":
+        if subset == "all":
             for frame in range(1, n_frames + 1):
                 spectrum = self.read_single_frame(file, header, frame)
                 spectra.append(spectrum)
@@ -214,9 +214,9 @@ class AnalyzeAcq:
                 "Subset argument must be string 'all' or tuple (start, end)")
 
         if average is True:
-            if laser is "PHAROS":
+            if laser == "PHAROS":
                 return np.mean(spectra, axis=0)
-            elif laser is "PIRL":
+            elif laser == "PIRL":
                 # exclude spectra with just noise from the calculation of the
                 # average
                 noise_indices = []
@@ -415,34 +415,32 @@ class AnalyzeAcq:
 
         labels, unknowns = [], []
 
-        # fragments are identified by adduct
-        if protein is "bradykinin_H":
+        if protein == "bradykinin_H":
             M_H = peaks[protein_index][0]
             M_H_expected_mass = 1061.23
             delta = np.absolute(M_H - M_H_expected_mass)
             percent_error = delta/M_H_expected_mass * 100
             if 0 <= percent_error <= 1:  
-                if substrate is "ITO":
+                if substrate == "ITO":
                     masses = {
-                        -45: "-COOH",
-                        23: "[M+Na]$^+$",
-                        39: "[M+K]$^+$",
-                        64: "[M+Zn]$^+$"
+                        1016.21: "-COOH",
+                        1084.22: "[M+Na]$^+$",
+                        1100.33: "[M+K]$^+$",
+                        1126.61: "[M+Zn]$^+$"
                     }
-                if substrate is "Si":
+                elif substrate == "Si":
                     masses = {
-                        -17: "-NH$_3$",
-                        23: "[M+Na]$^+$",
-                        39: "[M+K]$^+$"
+                        1044.20: "-NH$_3$",
+                        1084.22: "[M+Na]$^+$",
+                        1100.33: "[M+K]$^+$"
                     }
-                if substrate is "chalcogenide":
+                elif substrate == "chalcogenide":
                     masses = {
-                        -45: "-COOH",
-                        23: "[M+Na]$^+$",
-                        39: "[M+K]$^+$"
+                        1016.21: "-COOH",
+                        1084.22: "[M+Na]$^+$",
+                        1100.33: "[M+K]$^+$"
                     }
-        # fragments are identified by mass
-        elif protein is "bradykinin_2H":
+        elif protein == "bradykinin_2H":
             if protein_index is not None:
                 M_2H = peaks[protein_index][0]
                 M_2H_expected_mass = 531.12
@@ -477,11 +475,11 @@ class AnalyzeAcq:
 
         mz, voltages = list(zip(*peaks))
 
-        if protein is "" and substrate is "":
+        if protein == "" and substrate == "":
             for i, mass in enumerate(mz):
                 unknowns.append((i, mass))
                 labels.append(f"{mass:.2f}")
-        elif protein is "bradykinin_H":
+        elif protein == "bradykinin_H":
             for i, mass in enumerate(mz):
                 if i is protein_index:
                     continue
@@ -491,10 +489,11 @@ class AnalyzeAcq:
                     for theory_mass in masses.keys():
                         upper_lim = (0.01 * theory_mass) + theory_mass
                         lower_lim = -(0.01 * theory_mass) + theory_mass
-                        if adduct > lower_lim and adduct < upper_lim:
+                        if mass > lower_lim and mass < upper_lim:
                             labels.append(
                                     masses[theory_mass] +
-                                    f" ({mass:.2f})")
+                                    f" ({mass:.2f})" +
+                                    f"\n theory: {theory_mass}")
                             identified = True
                     if identified is False:
                         unknowns.append((i, mass))
@@ -504,7 +503,7 @@ class AnalyzeAcq:
                 proteins[protein] +
                 f" ({M_H:.2f})" +
                 f"\n theory: {M_H_expected_mass}")
-        elif protein is "bradykinin_2H":
+        elif protein == "bradykinin_2H":
             for i, mass in enumerate(mz):
                 if i is protein_index:
                     continue
@@ -533,7 +532,7 @@ class AnalyzeAcq:
             for tup in unknowns:
                 peak_index, mass = tup[0], tup[1]
                 print(
-                    f"Peak {peak_index} was unable to be identified. Mass = {adduct_mass}")
+                    f"Peak {peak_index} was unable to be identified. Mass = {mass}")
 
         return labels
 
@@ -569,7 +568,7 @@ class AnalyzeAcq:
         :return: annotated spectrum
         :type: matplotlib.figure.Figure
         """
-        plt.figure(figsize=plotprops["figsize"])
+        fig = plt.figure(figsize=plotprops["figsize"])
         if isinstance(mz, list) and isinstance(voltages, list):
             z = 0
             for i, x, y in zip(range(len(mz)), mz, voltages):
@@ -614,6 +613,8 @@ class AnalyzeAcq:
             plt.savefig(savefig, bbox_inches='tight')
         else:
             raise IOError("Arg savefig must be a string (i.e. 'filename.png')")
+            
+        return fig
 
     def get_pulse_energies(self, date, wavelength):
         """
@@ -646,16 +647,16 @@ class AnalyzeAcq:
 
         all_powers = df_powers[df_powers.date == date]
 
-        if wavelength is "1026":
+        if wavelength == "1026":
             powers = all_powers.iloc[:, 3:16]
-        elif wavelength is "513":
+        elif wavelength == "513":
             powers = all_powers.iloc[:, 17:29]
-        elif wavelength is "342":
+        elif wavelength == "342":
             powers = all_powers.iloc[:, 30:]
 
         cols = powers.columns.tolist()
 
-        if wavelength is "513" or "342":
+        if wavelength == "513" or "342":
             for ind, val in enumerate(cols):
                 cols[ind] = val[:4]
 
@@ -664,7 +665,7 @@ class AnalyzeAcq:
         dict_powers = dict(zip(cols, powervals))
 
         for power, pulseE in dict_powers.items():
-            if dict_powers[power] is not "":
+            if dict_powers[power] != "":
                 dict_powers[power] = str(pulseE) + r' $\mu$J'
 
         return dict_powers
@@ -695,7 +696,7 @@ class AnalyzeAcq:
         :return: several spectra in one figure
         :type: matplotlib.figure.Figure
         """
-        plt.figure(figsize=plotprops["figsize"])
+        fig = plt.figure(figsize=plotprops["figsize"])
         z = 0
         for i, x, y in zip(range(len(mz)), mz, voltages):
             avg = headers[i]['nFramesCount'][0]
@@ -728,3 +729,5 @@ class AnalyzeAcq:
         else:
             raise IOError(
                 "Arg savefig must be a string (i.e. 'filename.png')")
+            
+        return fig
