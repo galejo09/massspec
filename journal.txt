@@ -228,3 +228,7 @@
 
 08/04/2020
 - Plotted chalcogenide fragmentation
+
+09/04/2020
+- Reduced ITO, chalcogenide to 80 shots
+- Fragmentation comparison of 3 substrates
