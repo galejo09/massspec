@@ -232,3 +232,6 @@
 09/04/2020
 - Reduced ITO, chalcogenide to 80 shots
 - Fragmentation comparison of 3 substrates
+
+13/04/2020
+- Worked on shot2shot function in 13-17.04.2020
