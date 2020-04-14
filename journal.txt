@@ -235,3 +235,7 @@
 
 13/04/2020
 - Worked on shot2shot function in 13-17.04.2020
+
+14/04/2020
+- Zoom meeting; no presentation
+- Worked on sav-gol filter + UDWT in 13-17.04.2020
