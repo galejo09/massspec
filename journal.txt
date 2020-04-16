@@ -242,3 +242,7 @@
 
 15/04/2020
 - Worked on shot2shot func
+
+16/04/2020
+- Finished shot2shot func
+- Started 20/04/2020 meeting presentation
