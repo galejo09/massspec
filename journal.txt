@@ -246,3 +246,6 @@
 16/04/2020
 - Finished shot2shot func
 - Started 20/04/2020 meeting presentation
+
+19/04/2020
+- Finished 20/04/2020 presentation
