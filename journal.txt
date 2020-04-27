@@ -262,3 +262,8 @@
 24/04/2020
 - Worked on making video of blanks
 - Started 27/04/2020 meeting presentation
+
+27/04/2020
+- Zoom meeting; no presentation
+- Edited shot2shot func so that it works with silicon data
+- Made changes to 13-17.04.2020 notebook
