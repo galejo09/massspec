@@ -267,3 +267,7 @@
 - Zoom meeting; no presentation
 - Edited shot2shot func so that it works with silicon data
 - Made changes to 13-17.04.2020 notebook
+
+28/04/2020
+- Plotted reflex data
+- Worked on Femtosecond MALDI slides
