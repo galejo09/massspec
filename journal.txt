@@ -271,3 +271,7 @@
 28/04/2020
 - Plotted reflex data
 - Worked on Femtosecond MALDI slides
+
+30/04/2020
+- Zoom meeting; Femtosecond MALDI presentation
+- Finished v2 of shot2shot func
