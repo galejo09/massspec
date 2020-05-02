@@ -20,11 +20,11 @@ class AnalyzeAcq:
 
         :param date: date of the experiment in any format
         :type: str
-        :param listfiles: if True, every file name in arg subset 
+        :param listfiles: if True, every file name in arg subset
             and its index is printed
         :type: bool
-        :param subset: list of file names to be stored 
-            (e.g. [1, 2] for files 01.signal.div, 02.signal.div); 
+        :param subset: list of file names to be stored
+            (e.g. [1, 2] for files 01.signal.div, 02.signal.div);
             all files stored by default
         :type: list
 
@@ -66,7 +66,7 @@ class AnalyzeAcq:
         Reads the header of a binary acquisiton file.
 
         :param file: acquisition file
-        :type: str 
+        :type: str
         :param display: if True, the values in the header are printed
         :type: bool
 
@@ -158,7 +158,7 @@ class AnalyzeAcq:
         :type: str
         :param header: header of acquisiton file
         :type: dict
-        :param frame: frame number; if frame is outside the bounds of 
+        :param frame: frame number; if frame is outside the bounds of
             (1, nFramesCount), an exception is raised
         :type: int
 
@@ -192,10 +192,10 @@ class AnalyzeAcq:
         :type: dict
         :param subset: range of frames as a tuple; default is 'all'
         :type: tuple
-        :param laser: laser used in the experiment; 
+        :param laser: laser used in the experiment;
             either 'PIRL' (3 micron) or 'PHAROS' (1 micron)
         :type: str
-        :param average: if True, mean of spectra is returned; 
+        :param average: if True, mean of spectra is returned;
             if laser = "PIRL", shots with only noise are excluded from the mean
         :type: bool
 
@@ -251,9 +251,9 @@ class AnalyzeAcq:
 
     def m2z(self, t, voltages, params):
         """
-        Converts flight times to mass-to-charge ratios calibrated according 
+        Converts flight times to mass-to-charge ratios calibrated according
         to the proton peak.
-        
+
         Also returns relative voltages.
 
         :param t: flight times in us
@@ -297,7 +297,7 @@ class AnalyzeAcq:
 
         mz = 2 * Da * e * np.square((t * (E_0 * s_0 + E_1 * s_1)**(1 / 2)) / d)
 
-        peaks_i = signal.find_peaks(voltages, height=1)[
+        peaks_i = scipy.signal.find_peaks(voltages, height=1)[
             0]  # find voltage peaks
 
         peaks = []
@@ -355,7 +355,7 @@ class AnalyzeAcq:
         :type: numpy.ndarray (or list to plot multiple spectra)
         :param voltages: voltages (y-axis)
         :type: numpy.ndarray (or list to plot multiple spectra)
-        :param offset: space between each plot if plotting more than one 
+        :param offset: space between each plot if plotting more than one
             spectra; must have same units as voltages
         :type: float
         :param display: if True, peak coordinates are printed
@@ -395,31 +395,31 @@ class AnalyzeAcq:
     def identify_peaks(self, peaks, protein='', substrate='',
                        protein_index=None, unknown=False):
         """
-        Returns fragment labels for successfully identified peaks. Peaks that 
-        cannot be identified are returned with a label of the following format: 
+        Returns fragment labels for successfully identified peaks. Peaks that
+        cannot be identified are returned with a label of the following format:
         "unknown adduct: {mass of adduct}" for M+H and "{mass}" for M+2H.
 
-        Leave protein and substrate as empty strings for general identification 
-        of unknown peaks, e.g. label without reference to a protein and without 
+        Leave protein and substrate as empty strings for general identification
+        of unknown peaks, e.g. label without reference to a protein and without
         mass-to-charge correction for substrate.
 
-        :param protein: one of 
+        :param protein: one of
             ["", "bradykinin_H", "bradykinin_2H"]
         :type: str
-        :param substrate: one of 
+        :param substrate: one of
             ["", "ITO", "Si", "chalcogenide", "borosilicate"]
         :type: str
         :param peaks: peak coordinates (mz, voltage) as tuples
         :type: list
-        :param protein_index: index of the specified protein within 
+        :param protein_index: index of the specified protein within
             list(peaks); if protein peak is not present, set to None
         :type: int
-        :param unknown: if True, the index of the peak and the mass of the 
+        :param unknown: if True, the index of the peak and the mass of the
             corresponding adduct are printed for all unidentified peaks
         :type: bool
 
-        :return: fragment labels of the format str({name} ({mass}) \n theory: 
-            {theoretical mass}) (known peaks) and/or mass-to-charge ratios 
+        :return: fragment labels of the format str({name} ({mass}) \n theory:
+            {theoretical mass}) (known peaks) and/or mass-to-charge ratios
             (unknown peaks)
         :type: list
         """
@@ -450,6 +450,7 @@ class AnalyzeAcq:
                 if substrate == "ITO":
                     masses = {
                         1016.21: "-COOH",
+                        1044.20: "-NH$_3$",
                         1084.22: "[M+Na]$^+$",
                         1100.33: "[M+K]$^+$",
                         1126.61: "[M+Zn]$^+$"
@@ -478,7 +479,7 @@ class AnalyzeAcq:
                     raise IOError(
                         f"Peak of index {protein_index} could not be identified as {protein}")
             masses = {
-                226.30: "a$_2$", 
+                226.30: "a$_2$",
                 254.31: "b$_2$",
                 307: "z$_2$",
                 323.42: "a$_3$",
@@ -585,10 +586,10 @@ class AnalyzeAcq:
         :type: numpy.ndarray
         :param peaks: peak coordinates (mz, voltage) as tuples
         :type: list
-        :param peak_labels: str(label) for each peak in list(peaks); note that 
+        :param peak_labels: str(label) for each peak in list(peaks); note that
             peaks and labels are matched by index
         :type: list
-        :param legend_labels: str(label) for each plot if plotting more than 
+        :param legend_labels: str(label) for each plot if plotting more than
             one spectra
         :type: list
         :param plotprops: properties of the plot;
@@ -600,7 +601,7 @@ class AnalyzeAcq:
         "labelspacing" : float,
         "labelsize" : float}
         :type: dict
-        :param savefig: spectrum will be saved with this file name; if None, 
+        :param savefig: spectrum will be saved with this file name; if None,
             the spectrum will only be shown
         :type: str
 
@@ -631,7 +632,7 @@ class AnalyzeAcq:
         plt.xlim(plotprops["xlim"][0], plotprops["xlim"][1])
         plt.ylim(plotprops["ylim"][0], plotprops["ylim"][1])
         plt.xlabel("$m/z$")
-        plt.ylabel("Relative voltage")
+        plt.ylabel("Relative intensity")
         plt.title(plotprops["title"])
 
         labelspacing = 0.005
@@ -664,7 +665,7 @@ class AnalyzeAcq:
         :param wavelength: wavelength in nm; one of '1026', '513', '342'
         :type: str
 
-        :return: dictionary of format 
+        :return: dictionary of format
             {'PHAROS GUI power in mW' : 'Measured pulse energy in uJ'}
         :type: dict
         """
@@ -721,7 +722,7 @@ class AnalyzeAcq:
         :type: list
         :param voltages: voltages of all spectra (y-axis)
         :type: list
-        :param labels: labels corresponding to each spectra; note that mz[0], 
+        :param labels: labels corresponding to each spectra; note that mz[0],
             voltages[0], and labels[0] must refer to the same spectrum
         :type: list
         :param plotprops: properties of the plot; "xlim", "ylim" optional
@@ -731,7 +732,7 @@ class AnalyzeAcq:
         "xlim" : tup,
         "ylim" : tup}
         :type: dict
-        :param savefig: spectrum will be saved with this file name; if None, 
+        :param savefig: spectrum will be saved with this file name; if None,
             the spectrum will only be shown
         :type: str
 
@@ -774,14 +775,18 @@ class AnalyzeAcq:
 
         return fig
 
-    def shot2shot(self, t, voltages, flight_time=False):
+    def shot2shot(self, file, header, t, voltages, flight_time=False):
         """
-        Measures shot-to-shot reproducibility by calculating the percentage of 
+        Measures shot-to-shot reproducibility by calculating the percentage of
         shots that produce a molecular ion (bradykinin) peak.
 
-        The signal is denoised with Undecimated Discrete Wavelet Transform 
+        The signal is denoised with Undecimated Discrete Wavelet Transform
         (UDWT) and smoothed with the Savitsky-Golay filter before peak-finding.
 
+        :param file: acquisition file
+        :type: str
+        :param header: header of acquisiton file
+        :type: dict
         :param t: flight times in us
         :type: numpy.ndarray
         :param voltages: voltages in uV for multiple shots
@@ -792,6 +797,54 @@ class AnalyzeAcq:
         :return: percentage of shots that produce a molecular ion peak
         :type: float
         """
+        # Check if file is empty
+        if header['nFramesCount'] == 0:
+             print(f"{file} does not contain voltage data.")
+             return
+         
+        # Estimate the molecular ion flight time (est_flight_t) from the
+        # average spectrum
+        voltages_avg = self.read_frames(file, header)
+
+        voltages_filtered = scipy.signal.savgol_filter(voltages_avg,
+                                                       window_length=101,
+                                                       polyorder=2)
+
+        peaks_avg = scipy.signal.find_peaks(voltages_filtered,
+                                            height=3.5 * np.std(voltages_avg[16000:21000]),
+                                            distance=200)[0]
+
+        widths = scipy.signal.peak_widths(voltages_filtered, peaks_avg)[0]
+
+        t_peaks_avg, v_peaks_avg = [], []
+
+        for i in peaks_avg:
+            t_peaks_avg.append(t[i])
+            v_peaks_avg.append(voltages_filtered[i])
+            
+        est_flight_t = 0
+
+        # Use width of the molecular ion peak to set lower limit of flight time
+        for i, time in enumerate(t_peaks_avg):
+            if time > 21.5 and time < 23:
+                est_flight_t = time
+                # Convert units of peak width from samples to us; approx. 1000
+                # points/us
+                peak_width = widths[i] / 1000
+                lower_flight_t = time - peak_width / 2
+                break
+
+        # If the average spectrum does not have significant molecular ion peak, 
+        # take lowest possible estimate of flight time
+        if est_flight_t is 0:
+            lower_flight_t = 21.6
+            upper_lim = 21000
+            lower_lim = 16000
+        else:
+            # Set range of noise measurement
+            upper_lim = int(est_flight_t) * 1000
+            lower_lim = upper_lim - 5000
+
         t_peaks, v_peaks = [], []
 
         for shot in voltages:
@@ -803,10 +856,10 @@ class AnalyzeAcq:
 
             for ca, cd in coeffs:
                 cat = pywt.threshold(data=ca,
-                                     value=np.std(ca[16000:21000]) * 2,
+                                     value=np.std(ca[lower_lim:upper_lim]) * 2,
                                      mode='hard')
                 cdt = pywt.threshold(data=cd,
-                                     value=np.std(cd[16000:21000]) * 2,
+                                     value=np.std(cd[lower_lim:upper_lim]) * 2,
                                      mode='hard')
                 coeffst.append((cat, cdt))
 
@@ -820,16 +873,17 @@ class AnalyzeAcq:
 
             # Noise is measured as the standard deviation of the raw signal 5
             # us before the expected molecular ion peak
-            noise = np.std(shot[16000:21000])
+            noise = np.std(shot[lower_lim:upper_lim])
 
             # 7:2 signal-to-noise ratio
             signal = noise * 3.5
 
             # Filtering the signal lowers intensity values; adjust to match
-            # original intensities
-            if np.amax(shot[21600:22000]) >= signal:
+            # original intensities in the range of the molecular ion peak
+            low, high = 21600, 23000
+            if np.amax(shot[low:high]) >= signal:
                 shot_filtered = np.amax(
-                    shot[21600:22000]) / np.amax(shot_filtered[21600:22000]) * shot_filtered
+                    shot[low:high]) / np.amax(shot_filtered[low:high]) * shot_filtered
 
             peaks = scipy.signal.find_peaks(shot_filtered,
                                             height=signal,
@@ -848,11 +902,11 @@ class AnalyzeAcq:
 
         shots = np.zeros(len(voltages))
 
-        # the first peak within 21 - 22 us is considered to molecular ion
-        # (peptide) peak
+        # the first peak greater than or equal to the lower limit of flight
+        # time is considered the molecular ion peak
         for shot, times in enumerate(t_peaks):
             for time in times:
-                if time > 21 and time < 22:
+                if time >= lower_flight_t:
                     flight_times.append(time)
                     shots[shot] = 1
                     break
