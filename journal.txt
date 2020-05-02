@@ -275,3 +275,6 @@
 30/04/2020
 - Zoom meeting; Femtosecond MALDI presentation
 - Finished v2 of shot2shot func
+
+02/05/2020
+- Finished v2 histogram of shot2shot
