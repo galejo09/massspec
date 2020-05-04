@@ -14,7 +14,7 @@ class AnalyzeAcq:
     def __init__(self, directory):
         self.directory = directory
 
-    def load_data(self, date, listfiles=True, subset="all"):
+    def load_data(self, date, subset="all", listfiles=True):
         """
         Stores file names within the experiment directory.
 
