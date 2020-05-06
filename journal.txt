@@ -282,3 +282,9 @@
 04/05/2020
 - Worked on Cryo MS slides for UKE presentation tomorrow
 - Started re-plotting fragmentation for ITO
+
+05/05/2020
+- Attended UKE presentation
+
+06/05/2020
+- Worked on ITO M+2H fragmentation 
