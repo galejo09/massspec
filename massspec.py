@@ -47,7 +47,7 @@ class AnalyzeAcq:
                 for f in files:
                     if 'div' in f:
                         data.append(str(Path(os.path.join(root, f))))
-        if isinstance(subset, list):
+        elif isinstance(subset, list):
             subset = [str(file_no).zfill(2) for file_no in subset]
             for root, dirs, files in os.walk(full_path):
                 for file_no in subset:
@@ -55,9 +55,10 @@ class AnalyzeAcq:
                     for f in files:
                         if f[:2] == file_no:
                             data.append(str(Path(os.path.join(root, f))))
-                            if listfiles is True:
-                                print(f"{i} : {f}")
-                                i += 1
+                            
+        if listfiles is True:
+            print(f"{i} : {f}")
+            i += 1
 
         return data
 
