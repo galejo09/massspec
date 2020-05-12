@@ -297,3 +297,8 @@
 - Read manuscript, made edits
 - Started plotting PIRL data from April
 - Started 2020/05/14 presentation
+
+12/05/2020
+- Finished 2020/05/14 slides
+- Re-plotted ITO fragmentation (200-700, 700-1000, 1000-)
+- Read 3 micron Krafft paper
