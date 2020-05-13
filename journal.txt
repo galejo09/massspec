@@ -301,4 +301,7 @@
 12/05/2020
 - Finished 2020/05/14 slides
 - Re-plotted ITO fragmentation (200-700, 700-1000, 1000-)
-- Read 3 micron Krafft paper
+- Read 3 micron Kraft paper
+
+13/05/2020
+- Worked on 2020/05/14 slides (FWHM calculation, re-plotting)
