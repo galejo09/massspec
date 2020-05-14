@@ -305,3 +305,7 @@
 
 13/05/2020
 - Worked on 2020/05/14 slides (FWHM calculation, re-plotting)
+
+14/05/2020
+- Zoom meeting; no presentation
+- Worked on 2020/05/18 slides (re-calculation of FWHM, plot front vs. back delta t)
