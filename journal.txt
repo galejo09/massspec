@@ -309,3 +309,6 @@
 14/05/2020
 - Zoom meeting; no presentation
 - Worked on 2020/05/18 slides (re-calculation of FWHM, plot front vs. back delta t)
+
+15/05/2020
+- Re-plotted front vs. back delta t plot with time trace
