@@ -312,3 +312,8 @@
 
 15/05/2020
 - Re-plotted front vs. back delta t plot with time trace
+
+18/05/2020
+- Zoom meeting; presented PIRL slides
+- Corrected delta t figure from slide 9; switched 'front' and 'back' labels
+- Corrected flight time calculations for each substrate (69 datasets, not 11 - there are 11 dates) in 27.04-1.05.2020 notebook
