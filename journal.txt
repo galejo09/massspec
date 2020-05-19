@@ -317,3 +317,8 @@
 - Zoom meeting; presented PIRL slides
 - Corrected delta t figure from slide 9; switched 'front' and 'back' labels
 - Corrected flight time calculations for each substrate (69 datasets, not 11 - there are 11 dates) in 27.04-1.05.2020 notebook
+
+19/05/2020
+- Edited draft of publication
+- Re-plotted Si fragmentation in 04-08.05.2020 notebook
+- Turned shot2shot histogram into a stacked histogram in 27.04-1.05.2020 notebook 
