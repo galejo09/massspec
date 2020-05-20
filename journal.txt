@@ -322,3 +322,9 @@
 - Edited draft of publication
 - Re-plotted Si fragmentation in 04-08.05.2020 notebook
 - Turned shot2shot histogram into a stacked histogram in 27.04-1.05.2020 notebook 
+
+20/05/2020
+- Zoom meeting; no presentation
+- Read a couple of papers incld. Accurate Mass Measurement: Terminology and Treatment of Data
+- Worked on updates to last week's meeting in 11-15.05.2020 notebook
+- Started 25/05/2020 meeting slides
