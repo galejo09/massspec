@@ -328,3 +328,6 @@
 - Read a couple of papers incld. Accurate Mass Measurement: Terminology and Treatment of Data
 - Worked on updates to last week's meeting in 11-15.05.2020 notebook
 - Started 25/05/2020 meeting slides
+
+23/05/2020
+- Re-plotted chalcogenide fragmentation in 04-08.05.2020 notebook
