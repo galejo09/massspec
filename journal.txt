@@ -331,3 +331,9 @@
 
 23/05/2020
 - Re-plotted chalcogenide fragmentation in 04-08.05.2020 notebook
+
+25/05/2020
+- Zoom meeting; presented
+- Plotted v3 of shot2shot histogram (reduced # of Si data)
+- Calculated ANOVA for the 3 flight times
+- Compiled all ions from the substrates into 1 excel sheet
