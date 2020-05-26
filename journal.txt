@@ -337,3 +337,7 @@
 - Plotted v3 of shot2shot histogram (reduced # of Si data)
 - Calculated ANOVA for the 3 flight times
 - Compiled all ions from the substrates into 1 excel sheet
+
+26/05/2020
+- Included mass measurement accuracy in the COMPLETE_ions_list_ALL_SUBSTRATES.xlsx
+- Wrote up one-way ANOVA result for flight times in manuscript google doc 
