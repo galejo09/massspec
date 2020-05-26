@@ -2,6 +2,8 @@ import numpy as np
 import os
 import pandas as pd
 import pywt
+import sigfig
+import seaborn as sns
 import scipy.signal
 from os.path import isdir
 from pathlib import Path
@@ -47,6 +49,9 @@ class AnalyzeAcq:
                 for f in files:
                     if 'div' in f:
                         data.append(str(Path(os.path.join(root, f))))
+                        if listfiles is True:
+                            print(f"{i} : {f}")
+                            i += 1
         elif isinstance(subset, list):
             subset = [str(file_no).zfill(2) for file_no in subset]
             for root, dirs, files in os.walk(full_path):
@@ -55,10 +60,9 @@ class AnalyzeAcq:
                     for f in files:
                         if f[:2] == file_no:
                             data.append(str(Path(os.path.join(root, f))))
-                            
-        if listfiles is True:
-            print(f"{i} : {f}")
-            i += 1
+                        if listfiles is True:
+                            print(f"{i} : {f}")
+                            i += 1
 
         return data
 
@@ -177,8 +181,8 @@ class AnalyzeAcq:
 
         # convert bytes to volts; the equivalent MATLAB script is byte2volts
         int8max = np.float64(127)  # originally double(int8(2^7)) in MATLAB
-        spectrum = -(((header['dHighV'] - header['dLowV']) / \
-                     (2.0 * int8max)) * (spectrum + int8max) + header['dLowV'])
+        spectrum = -(((header['dHighV'] - header['dLowV']) /
+                      (2.0 * int8max)) * (spectrum + int8max) + header['dLowV'])
 
         return spectrum
 
@@ -393,8 +397,16 @@ class AnalyzeAcq:
 
         return coords
 
-    def identify_peaks(self, peaks, protein='', substrate='',
-                       protein_index=None, unknown=False):
+    def identify_peaks(
+            self,
+            file,
+            peaks,
+            protein='',
+            substrate='',
+            protein_index=None,
+            unknown=False,
+            csv=True,
+            png=True):
         """
         Returns fragment labels for successfully identified peaks. Peaks that
         cannot be identified are returned with a label of the following format:
@@ -404,19 +416,39 @@ class AnalyzeAcq:
         of unknown peaks, e.g. label without reference to a protein and without
         mass-to-charge correction for substrate.
 
+        :param file: acquisition file
+        :type: str
+        :param peaks: peak coordinates (mz, voltage) as tuples
+        :type: list
         :param protein: one of
             ["", "bradykinin_H", "bradykinin_2H"]
         :type: str
         :param substrate: one of
-            ["", "ITO", "Si", "chalcogenide", "borosilicate"]
+            ["", "ITO", "Si", "chalcogenide"]
         :type: str
-        :param peaks: peak coordinates (mz, voltage) as tuples
-        :type: list
         :param protein_index: index of the specified protein within
             list(peaks); if protein peak is not present, set to None
         :type: int
         :param unknown: if True, the index of the peak and the mass of the
             corresponding adduct are printed for all unidentified peaks
+        :type: bool
+        :param csv: if True, a csv file will be created with columns
+            0 : Index
+            1 : Ion
+            2 : Theoretical m/z
+            3 : m/z
+            4 : Relative Intensity
+            The file name will have the following format
+            "{date}_{file #}_{protein}_{substrate}.csv"
+        :type: bool
+        :param png: if True, a table will be created with columns
+            0 : Index
+            1 : Ion
+            2 : Theoretical m/z
+            3 : m/z
+            4 : Relative Intensity
+            The file name will have the following format
+            "{date}_{file #}_{protein}_{substrate}.png"
         :type: bool
 
         :return: fragment labels of the format str({name} ({mass}) \n theory:
@@ -440,7 +472,7 @@ class AnalyzeAcq:
             raise IOError(
                 f"Arg substrate must be one of the following: '', 'ITO', 'Si', 'chalcogenide', 'borosilicate'")
 
-        labels, unknowns = [], []
+        labels, unknowns, theory_mzs = [], [], []
 
         if protein == "bradykinin_H":
             M_H = peaks[protein_index][0]
@@ -480,16 +512,23 @@ class AnalyzeAcq:
                     raise IOError(
                         f"Peak of index {protein_index} could not be identified as {protein}")
             masses = {
+                201.20: "x$_1$",
                 226.30: "a$_2$",
+                230.25: "v$_2$",
                 254.31: "b$_2$",
+                268: "c$_2$",
                 307: "z$_2$",
                 323.42: "a$_3$",
+                348.38: "x$_2$",
+                365: "c$_3$",
+                376.43: "w$_3$",
                 380.47: "a$_4$",
                 404: "z$_3$",
                 417.48: "y$_3$",
                 422: "c$_4$",
                 446.51: "x$_3$",
                 474.54: "v$_4$",
+                490.56: "z$_4$",
                 527.65: "a$_5$",
                 553: "b$_5$",
                 569: "c$_5$",
@@ -507,8 +546,8 @@ class AnalyzeAcq:
                 900: "c$_8$",
                 903.02: "y$_8$",
                 932: "x$_8$",
-                961.08: "R$_arg$",
-                970.10: "-Benzyl (C$_6$H$_5$CH$_2$-)",
+                961.08: "-R$_{arg}$",
+                970.10: "-Benzyl"
             }
 
         mz, voltages = list(zip(*peaks))
@@ -528,19 +567,41 @@ class AnalyzeAcq:
                         upper_lim = (0.01 * theory_mass) + theory_mass
                         lower_lim = -(0.01 * theory_mass) + theory_mass
                         if mass > lower_lim and mass < upper_lim:
-                            labels.append(
-                                masses[theory_mass] +
-                                f" ({mass:.2f})" +
-                                f"\n theory: {theory_mass}")
-                            identified = True
+                            if masses[theory_mass] not in labels:
+                                theory_mzs.append(theory_mass)
+                                labels.append(
+                                    masses[theory_mass])
+                                identified = True
+                                break
+                            else:
+                                # If more than one ion is within 1% of the
+                                # theoretical mass, determine which m/z is
+                                # closer to the theoretical mass
+                                index = labels.index(masses[theory_mass])
+                                val1 = mz[index]
+                                val2 = mass
+                                delta1 = np.absolute(val1 - theory_mass)
+                                delta2 = np.absolute(val2 - theory_mass)
+                                if delta2 == min(delta1, delta2):
+                                    # Re-label the other peak as unknown
+                                    unknowns.append((index, val1))
+                                    theory_mzs[index] = "-"
+                                    labels[index] = f"{val1-mz[protein_index]:.2f}"
+                                    theory_mzs.append(theory_mass)
+                                    labels.append(
+                                        masses[theory_mass])
+                                    identified = True
+                                    break
                     if identified is False:
                         unknowns.append((i, mass))
-                        labels.append(f"unknown adduct: {adduct:.2f}")
+                        theory_mzs.append("-")
+                        labels.append(f"{adduct:.2f}")
+            theory_mzs.insert(
+                protein_index,
+                M_H_expected_mass)
             labels.insert(
                 protein_index,
-                proteins[protein] +
-                f" ({M_H:.2f})" +
-                f"\n theory: {M_H_expected_mass}")
+                proteins[protein])
         elif protein == "bradykinin_2H":
             for i, mass in enumerate(mz):
                 if i is protein_index:
@@ -551,26 +612,89 @@ class AnalyzeAcq:
                         upper_lim = (0.01 * theory_mass) + theory_mass
                         lower_lim = -(0.01 * theory_mass) + theory_mass
                         if mass > lower_lim and mass < upper_lim:
-                            labels.append(
-                                masses[theory_mass] +
-                                f" ({mass:.2f})" +
-                                f"\n theory: {theory_mass}")
-                            identified = True
+                            if masses[theory_mass] not in labels:
+                                theory_mzs.append(theory_mass)
+                                labels.append(
+                                    masses[theory_mass])
+                                identified = True
+                                break
+                            else:
+                                # If more than one ion is within 1% of the
+                                # theoretical mass, determine which m/z is
+                                # closer to the theoretical mass
+                                index = labels.index(masses[theory_mass])
+                                val1 = mz[index]
+                                val2 = mass
+                                delta1 = np.absolute(val1 - theory_mass)
+                                delta2 = np.absolute(val2 - theory_mass)
+                                if delta2 == min(delta1, delta2):
+                                    # Re-label the other peak as unknown
+                                    unknowns.append((index, val1))
+                                    theory_mzs[index] = "-"
+                                    labels[index] = f"{val1:.2f}"
+                                    theory_mzs.append(theory_mass)
+                                    labels.append(
+                                        masses[theory_mass])
+                                    identified = True
+                                    break
                     if identified is False:
                         unknowns.append((i, mass))
+                        theory_mzs.append("-")
                         labels.append(f"{mass:.2f}")
             if protein_index is not None:
+                theory_mzs.insert(
+                    protein_index,
+                    M_2H_expected_mass)
                 labels.insert(
                     protein_index,
-                    proteins[protein] +
-                    f" ({M_2H:.2f})" +
-                    f"\n theory: {M_2H_expected_mass}")
+                    proteins[protein])
 
         if unknown is True:
             for tup in unknowns:
                 peak_index, mass = tup[0], tup[1]
                 print(
                     f"Peak {peak_index} was unable to be identified. Mass = {mass}")
+
+        mz = [round(mass, 1) for mass in mz]
+        voltages = [sigfig.round(np.float(v), sigfigs=2) for v in voltages]
+        df = pd.DataFrame({"Ion": labels,
+                           "Theoretical m/z": theory_mzs,
+                           "m/z": mz,
+                           "Relative intensity": voltages})
+        display(df)
+
+        date = file.split("\\")[-2]
+        fname = file.split("\\")[-1][:2]
+
+        if csv is True:
+            df.to_csv(f"{date}_{fname}_{protein}_{substrate}.csv")
+
+        if png is True:
+            # Fill the 'Ion' and 'Theoretical m/z' columns with dummy numbers
+            # since sns.heatmap does not accept strings
+            df = pd.DataFrame({"Ion": np.random.rand(len(mz)),
+                               "Theoretical m/z": np.random.rand(len(mz)),
+                               "m/z": mz,
+                               "Relative intensity": voltages})
+            # values to use in the heatmap
+            annotations = np.column_stack([labels, theory_mzs, mz, voltages])
+
+            # Use a blank heatmap as a table
+            fig, ax = plt.subplots(figsize=(8, 15))
+            ax.xaxis.tick_top()
+            ax.tick_params(length=0)
+            sns.heatmap(df,
+                        cmap=['white'],
+                        annot=annotations,
+                        fmt='',
+                        linewidths=0.1,
+                        linecolor='k',
+                        cbar=False,
+                        yticklabels=False,
+                        ax=ax)
+            plt.savefig(
+                f"{date}_{fname}_{protein}_{substrate}.png",
+                bbox_inches='tight')
 
         return labels
 
@@ -800,9 +924,9 @@ class AnalyzeAcq:
         """
         # Check if file is empty
         if header['nFramesCount'] == 0:
-             print(f"{file} does not contain voltage data.")
-             return
-         
+            print(f"{file} does not contain voltage data.")
+            return
+
         # Estimate the molecular ion flight time (est_flight_t) from the
         # average spectrum
         voltages_avg = self.read_frames(file, header)
@@ -822,7 +946,7 @@ class AnalyzeAcq:
         for i in peaks_avg:
             t_peaks_avg.append(t[i])
             v_peaks_avg.append(voltages_filtered[i])
-            
+
         est_flight_t = 0
 
         # Use width of the molecular ion peak to set lower limit of flight time
@@ -835,7 +959,7 @@ class AnalyzeAcq:
                 lower_flight_t = time - peak_width / 2
                 break
 
-        # If the average spectrum does not have significant molecular ion peak, 
+        # If the average spectrum does not have significant molecular ion peak,
         # take lowest possible estimate of flight time
         if est_flight_t is 0:
             lower_flight_t = 21.6
