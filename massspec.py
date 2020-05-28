@@ -60,9 +60,9 @@ class AnalyzeAcq:
                     for f in files:
                         if f[:2] == file_no:
                             data.append(str(Path(os.path.join(root, f))))
-                        if listfiles is True:
-                            print(f"{i} : {f}")
-                            i += 1
+                            if listfiles is True:
+                                print(f"{i} : {f}")
+                                i += 1
 
         return data
 
