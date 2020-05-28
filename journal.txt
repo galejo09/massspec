@@ -340,4 +340,8 @@
 
 26/05/2020
 - Included mass measurement accuracy in the COMPLETE_ions_list_ALL_SUBSTRATES.xlsx
-- Wrote up one-way ANOVA result for flight times in manuscript google doc 
+- Wrote up one-way ANOVA result for flight times in manuscript google doc
+
+28/05/2020
+- Started 25-29.05.2020 notebook
+- Re-plotted shot2shot histogram (v4) to correct for overlapping bars
