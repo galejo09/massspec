@@ -348,3 +348,6 @@
 
 29/05/2020
 - Started re-plotting ITO fragmentation with bradykinin at 1061
+
+02/06/2020
+- Started gaussian PIRL analysis in 02-05.06.2020 notebook
