@@ -351,3 +351,6 @@
 
 02/06/2020
 - Started gaussian PIRL analysis in 02-05.06.2020 notebook
+
+03/06/2020
+- Made short presentation on ion count analysis for 04/06 meeting
