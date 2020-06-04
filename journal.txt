@@ -354,3 +354,7 @@
 
 03/06/2020
 - Made short presentation on ion count analysis for 04/06 meeting
+
+04/06/2020
+- Zoom meeting; presented and discussed progress on ion count analysis
+- Included offset if gauss function and downsized/binned data 
