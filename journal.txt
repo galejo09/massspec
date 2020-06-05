@@ -358,3 +358,10 @@
 04/06/2020
 - Zoom meeting; presented and discussed progress on ion count analysis
 - Included offset if gauss function and downsized/binned data 
+
+05/06/2020
+- Made significant progress in ion count analysis: 
+	- identified a dataset
+	- identified 17 bradykinin peaks of similar intensities
+	- quantified the noise in the baseline (data is discrete!)
+	
