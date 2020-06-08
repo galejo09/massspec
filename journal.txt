@@ -364,4 +364,9 @@
 	- identified a dataset
 	- identified 17 bradykinin peaks of similar intensities
 	- quantified the noise in the baseline (data is discrete!)
+
+08/06/2020
+- Contined ion count analysis in 02-05.06.2020 notebook:
+	- Processed all 17 spectra (binning, fitting)
+	- Chose three bins for relative variance calculations
 	
