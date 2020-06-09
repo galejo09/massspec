@@ -369,4 +369,8 @@
 - Contined ion count analysis in 02-05.06.2020 notebook:
 	- Processed all 17 spectra (binning, fitting)
 	- Chose three bins for relative variance calculations
+
+09/06/2020
+- Finished ion count analysis up to lambda calculation in 02-05.06.2020 notebook
+- Made a presentation on preliminary results of ion count analysis
 	
