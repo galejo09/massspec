@@ -373,4 +373,12 @@
 09/06/2020
 - Finished ion count analysis up to lambda calculation in 02-05.06.2020 notebook
 - Made a presentation on preliminary results of ion count analysis
+
+10/06/2020
+- Zoom meeting; presented ion count analysis slides
+
+12/06/2020 (in CFEL)
+- Re-sampled data (take sum instead of mean of every pair of consecutive points) -> v2
+- Calculated 1/sqrt(lambda)
+- Updated ion count analysis slides
 	
