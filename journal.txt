@@ -381,4 +381,6 @@
 - Re-sampled data (take sum instead of mean of every pair of consecutive points) -> v2
 - Calculated 1/sqrt(lambda)
 - Updated ion count analysis slides
-	
+
+15/06/2020
+- Zoom meeting; presented updated ion count analysis slides
