@@ -384,3 +384,6 @@
 
 15/06/2020
 - Zoom meeting; presented updated ion count analysis slides
+
+16/06/2020
+- Made some alternate lambda calculations; plotted lambda vs. peak # for Sascha (02-05.06.2020 notebook)
