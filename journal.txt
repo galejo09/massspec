@@ -387,3 +387,6 @@
 
 16/06/2020
 - Made some alternate lambda calculations; plotted lambda vs. peak # for Sascha (02-05.06.2020 notebook)
+
+19/06/2020
+- Added slides about the Poisson distribution in the ion count analysis presentation
