@@ -390,3 +390,7 @@
 
 19/06/2020
 - Added slides about the Poisson distribution in the ion count analysis presentation
+
+22/06/2020
+- Meeting; presented Poission slides 
+- Removed outliers from 17 spectra in ion count analysis
