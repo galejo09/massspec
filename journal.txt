@@ -394,3 +394,6 @@
 22/06/2020
 - Meeting; presented Poission slides 
 - Removed outliers from 17 spectra in ion count analysis
+
+24/06/2020
+- Plotted CHCA and relfex blanks in 22-26.06.2020 notebook
