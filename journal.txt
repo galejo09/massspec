@@ -397,3 +397,7 @@
 
 24/06/2020
 - Plotted CHCA and relfex blanks in 22-26.06.2020 notebook
+
+25/06/2020
+- Plotted CHCA vs. blank for chalcogenide
+- Added 2020-06-04 power measurements to csv file
