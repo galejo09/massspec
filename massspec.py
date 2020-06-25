@@ -822,7 +822,7 @@ class AnalyzeAcq:
 
         cols = powers.columns.tolist()
 
-        if wavelength == "513" or "342":
+        if wavelength == "513" or wavelength == "342":
             for ind, val in enumerate(cols):
                 cols[ind] = val[:4]
 
