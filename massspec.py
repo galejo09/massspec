@@ -781,7 +781,7 @@ class AnalyzeAcq:
 
         return fig
 
-    def get_pulse_energies(self, date, wavelength):
+    def get_pulse_energies(self, date, wavelength, nd=''):
         """
         Retrieves pulse energy measurements for specified date and wavelength.
 
@@ -789,7 +789,12 @@ class AnalyzeAcq:
         :type: str
         :param wavelength: wavelength in nm; one of '1026', '513', '342'
         :type: str
-
+        :param nd: ND filter; one of '0.1ND', '0.3ND', '1.0+0.5ND', 
+            '1.0+0.5+0.4ND', '1.0+0.5+0.1ND', 'None'; 
+            if '', the function assumes that only 1 set of ND filters were used 
+            for the specified date
+        :type: str
+        
         :return: dictionary of format
             {'PHAROS GUI power in mW' : 'Measured pulse energy in uJ'}
         :type: dict
@@ -812,13 +817,19 @@ class AnalyzeAcq:
                 f"Wavelength {wavelength} was not used on {date}. Choose one of {wavelengths}.")
 
         all_powers = df_powers[df_powers.date == date]
-
-        if wavelength == "1026":
+        
+         if wavelength == "1026":
+            if nd != '':
+                all_powers = all_powers[all_powers["1026nm:"] == nd]
             powers = all_powers.iloc[:, 3:16]
         elif wavelength == "513":
-            powers = all_powers.iloc[:, 17:29]
+            if nd != '':
+                all_powers = all_powers[all_powers["513nm:"] == nd]
+            powers = all_powers.iloc[:, 22:34]
         elif wavelength == "342":
-            powers = all_powers.iloc[:, 30:]
+            if nd != '':
+                all_powers = all_powers[all_powers["342nm:"] == nd]
+            powers = all_powers.iloc[:, 35:]
 
         cols = powers.columns.tolist()
 
