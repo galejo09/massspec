@@ -401,3 +401,8 @@
 25/06/2020
 - Plotted CHCA vs. blank for chalcogenide
 - Added 2020-06-04 power measurements to csv file
+
+29/06/2020
+- Zoom meeting; no presentation
+- Plotted all conditions (REFLEX and SUBMARINE) and identified some key peaks clusters for chalcogenide
+- Placed results in Femtosecond Substrate slides
