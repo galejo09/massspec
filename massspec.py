@@ -818,10 +818,10 @@ class AnalyzeAcq:
 
         all_powers = df_powers[df_powers.date == date]
         
-         if wavelength == "1026":
+        if wavelength == "1026":
             if nd != '':
                 all_powers = all_powers[all_powers["1026nm:"] == nd]
-            powers = all_powers.iloc[:, 3:16]
+            powers = all_powers.iloc[:, 3:21]
         elif wavelength == "513":
             if nd != '':
                 all_powers = all_powers[all_powers["513nm:"] == nd]
