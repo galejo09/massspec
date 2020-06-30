@@ -406,3 +406,6 @@
 - Zoom meeting; no presentation
 - Plotted all conditions (REFLEX and SUBMARINE) and identified some key peaks clusters for chalcogenide
 - Placed results in Femtosecond Substrate slides
+
+30/06/2020
+- Made some updates to the plots in the Femtosecond Substrate slides (increased font size)
