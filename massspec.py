@@ -337,18 +337,23 @@ class AnalyzeAcq:
         """
         return np.absolute(h2["t"][0] - h1["t"][0]) / 3600
 
-    def pub_mode(self):
+    def pub_mode(self, fontsize=14, titlesize=24):
         """
         Sets rc params to produce figures that are formatted for publication.
+        
+        :param fontsize: font size of axes labels 
+        :type: int
+        :param titlesize: font size of title
+        :type: int
         """
         font = {
             "family": "sans-serif",
             "weight": "normal",
-            "size": 18
+            "size": fontsize
         }
         plt.rc("font", **font)
+        plt.rc("figure", titlesize=titlesize)
         plt.rc("legend", fontsize='medium')
-        plt.rc("savefig", bbox='tight', pad_inches=0)
 
     def find_peaks(self, mz, voltages, offset=0, display=True):
         """
