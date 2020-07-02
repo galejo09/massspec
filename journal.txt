@@ -409,3 +409,7 @@
 
 30/06/2020
 - Made some updates to the plots in the Femtosecond Substrate slides (increased font size)
+
+02/07/2020
+- Zoom meeting; no presentation
+- Did some research on how to proceeed with ion count analysis (how to calculate total number of ions in a peak)
