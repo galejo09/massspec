@@ -413,3 +413,7 @@
 02/07/2020
 - Zoom meeting; no presentation
 - Did some research on how to proceeed with ion count analysis (how to calculate total number of ions in a peak)
+
+03/07/2020
+- Meeting w/ Sascha and Andrey about ion count analysis
+- Calculated total number of ions and plotted avg. number of ions vs. t
