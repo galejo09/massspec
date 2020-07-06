@@ -417,3 +417,9 @@
 03/07/2020
 - Meeting w/ Sascha and Andrey about ion count analysis
 - Calculated total number of ions and plotted avg. number of ions vs. t
+
+06/07/2020
+- Zoom meeting; presented total ion count
+- Added offset subtraction and gaussian fitted avg. number of ions vs. t 
+- Added MCP detector efficiency to ion count slides
+- Continued with identifying peaks in ITO blanks (22-26.06.2020 notebook)s
