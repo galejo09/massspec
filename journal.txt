@@ -422,4 +422,7 @@
 - Zoom meeting; presented total ion count
 - Added offset subtraction and gaussian fitted avg. number of ions vs. t 
 - Added MCP detector efficiency to ion count slides
-- Continued with identifying peaks in ITO blanks (22-26.06.2020 notebook)s
+- Continued with identifying peaks in ITO blanks (22-26.06.2020 notebook)
+
+07/07/2020
+- Continued with identifying peaks in ITO blanks and started Si
