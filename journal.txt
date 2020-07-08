@@ -426,3 +426,6 @@
 
 07/07/2020
 - Continued with identifying peaks in ITO blanks and started Si
+
+08/07/2020
+- Continued with identifying peaks in Si blanks
