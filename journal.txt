@@ -432,3 +432,13 @@
 
 09/07/2020
 - Continued with identifying peaks in Si blanks
+
+10/07/2020
+- (in CFEL) Identified peaks in negative mode chalcogenide blanks
+
+13/07/2020
+- Zoom meeting; presented MCP efficiency and gaussian fit of avg. number of ions vs. t
+- Fixed gaussian fit of avg. number of ions vs. t by taking mean of data not fit; no rounding
+
+15/07/2020
+- Showed Andrey how to use the code using 13-17.07.2020 notebook
