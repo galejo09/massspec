@@ -442,3 +442,6 @@
 
 15/07/2020
 - Showed Andrey how to use the code using 13-17.07.2020 notebook
+
+16/07/2020
+- (CFEL) Set up ambient ablation with PIRL and PHAROS
