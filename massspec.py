@@ -792,7 +792,7 @@ class AnalyzeAcq:
 
         :param date: date of the experiment in any format
         :type: str
-        :param wavelength: wavelength in nm; one of '1026', '513', '342'
+        :param wavelength: wavelength in nm; one of '1026nm', '513nm', '342nm'
         :type: str
         :param nd: ND filter; one of '0.1ND', '0.3ND', '1.0+0.5ND', 
             '1.0+0.5+0.4ND', '1.0+0.5+0.1ND', 'None'; 
@@ -807,48 +807,42 @@ class AnalyzeAcq:
         d_format = parse(date)
         date = f"{d_format.year}-{d_format:%m}-{d_format:%d}"
 
-        df_metadata = pd.read_csv(self.directory + "\\TOFDatabase.csv")
         df_powers = pd.read_csv(
             self.directory +
             "\\power_measurements.csv",
             keep_default_na=False)
 
-        metadata = df_metadata[df_metadata.date == date]
-
-        wavelengths = metadata['wavelengths'].tolist()[0]
-
-        if wavelength not in wavelengths:
+        measurements = df_powers[df_powers.date == date]
+                                          
+        wavelengths = list(set(measurements['wavelength'].tolist()))
+                     
+        if wavelength not in wavelengths:        
             raise IOError(
                 f"Wavelength {wavelength} was not used on {date}. Choose one of {wavelengths}.")
-
-        all_powers = df_powers[df_powers.date == date]
-        
-        if wavelength == "1026":
-            if nd != '':
-                all_powers = all_powers[all_powers["1026nm:"] == nd]
-            powers = all_powers.iloc[:, 3:21]
-        elif wavelength == "513":
-            if nd != '':
-                all_powers = all_powers[all_powers["513nm:"] == nd]
-            powers = all_powers.iloc[:, 22:34]
-        elif wavelength == "342":
-            if nd != '':
-                all_powers = all_powers[all_powers["342nm:"] == nd]
-            powers = all_powers.iloc[:, 35:]
-
+                     
+        w = measurements[measurements.wavelength == wavelength]
+                     
+        if measurements['wavelength'].tolist().count(wavelength) != 1 and nd == '':
+            filters = w['filter'].tolist()
+            raise IOError(
+                f"Choose one set of filters from the following: {filters}")
+                            
+        if nd != '':
+            powers = w[w['filter'] == nd].iloc[:, 4:]
+        else:
+            powers = w.iloc[:, 4:]                 
+                                       
         cols = powers.columns.tolist()
-
-        if wavelength == "513" or wavelength == "342":
-            for ind, val in enumerate(cols):
-                cols[ind] = val[:4]
-
+                                          
         powervals = powers.values.tolist()[0]
-
+                     
         dict_powers = dict(zip(cols, powervals))
 
         for power, pulseE in dict_powers.items():
             if dict_powers[power] != "":
                 dict_powers[power] = str(pulseE) + r' $\mu$J'
+
+        dict_powers = {k:v for k,v in dict_powers.items() if v != ''}            
 
         return dict_powers
 
