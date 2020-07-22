@@ -445,3 +445,12 @@
 
 16/07/2020
 - (CFEL) Set up ambient ablation with PIRL and PHAROS
+
+19/07/2020
+- Ambient Ablation with PHAROS
+
+20/07/2020
+- MALDI w/ REFLEX
+
+22/07/2020
+- Finished first tutorial notebook for Andrey (13-17.07.2020)
