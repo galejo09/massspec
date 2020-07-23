@@ -454,3 +454,7 @@
 
 22/07/2020
 - Finished first tutorial notebook for Andrey (13-17.07.2020)
+
+23/07/2020
+- Measured different matrices for insulin and lysozyme in REFLEX
+- Ambient abalation with PHAROS (lysozyme, insulin); 2 powers, 2 concentrations, 2 matrices
