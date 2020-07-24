@@ -458,3 +458,6 @@
 23/07/2020
 - Measured different matrices for insulin and lysozyme in REFLEX
 - Ambient abalation with PHAROS (lysozyme, insulin); 2 powers, 2 concentrations, 2 matrices
+
+24/07/2020
+- REFLEX measurements of data collected yesterday
