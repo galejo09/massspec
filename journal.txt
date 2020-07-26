@@ -461,3 +461,6 @@
 
 24/07/2020
 - REFLEX measurements of data collected yesterday
+
+26/07/2020
+- Performed lambda simulations and obtained chi-square distribution; added to the ion count analysis slides
