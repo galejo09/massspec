@@ -464,3 +464,7 @@
 
 26/07/2020
 - Performed lambda simulations and obtained chi-square distribution; added to the ion count analysis slides
+
+28/07/2020
+- Plotted PHAROS-ablated and positive control REFLEX data
+- Made a correction to lambda values to shift chi-square to the mean  
