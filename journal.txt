@@ -467,4 +467,7 @@
 
 28/07/2020
 - Plotted PHAROS-ablated and positive control REFLEX data
-- Made a correction to lambda values to shift chi-square to the mean  
+- Made a correction to lambda values to shift chi-square to the mean
+
+29/07/2020
+- Made massspec tutorial 02 notebook for Andrey  
