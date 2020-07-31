@@ -167,7 +167,7 @@ class AnalyzeAcq:
             (1, nFramesCount), an exception is raised
         :type: int
 
-        :return: spectrum in uV
+        :return: spectrum in mV
         :type: numpy.ndarray
         """
         # check if frame number is less than the number of frames in file
@@ -263,7 +263,7 @@ class AnalyzeAcq:
 
         :param t: flight times in us
         :type: numpy.ndarray
-        :param voltages: voltages in uV
+        :param voltages: voltages in mV
         :type: numpy.ndarray
         :param params: constants for the mass-to-charge formula;
             if a list, the order must be as follows: [V_0, V_1, s_0, s_1, d];
@@ -924,7 +924,7 @@ class AnalyzeAcq:
         :type: dict
         :param t: flight times in us
         :type: numpy.ndarray
-        :param voltages: voltages in uV for multiple shots
+        :param voltages: voltages in mV for multiple shots
         :type: numpy.ndarray
         :param flight_time: if True, average flight time is also returned
         :type: bool
