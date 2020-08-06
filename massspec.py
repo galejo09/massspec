@@ -1,3 +1,16 @@
+"""
+massspec is a Python library that can be used for the analysis of mass spectra.
+
+It can be used to:
+- convert flight times to m/z
+- mark, identify, and label ion peaks
+- plot multiple spectra in one figure
+- calculate shot-to-shot reproducibility
+
+Note that this module was developed specifically for cryo femtosecond mass 
+spectrometry in the Atomically Resolved Dynamics Department at the Max Planck 
+Institute for the Structure and Dynamics of Matter.
+"""
 import numpy as np
 import os
 import pandas as pd
@@ -68,7 +81,7 @@ class AnalyzeAcq:
 
     def read_header(self, file, display=False):
         """
-        Reads the header of a binary acquisiton file.
+        Reads the header of a binary acquisition file.
 
         :param file: acquisition file
         :type: str
