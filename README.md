@@ -8,8 +8,8 @@ It can be used to:
 - calculate shot-to-shot reproducibility
 
 
-Note that this module was developed specifically for cryo femtosecond mass spectrometry in the Atomically Resolved Dynamics Department 
-at the Max Planck Institute for the Structure and Dynamics of Matter. Therefore not all the functions within the module may be compatible with 
+Note that this module was initially developed for cryo femtosecond mass spectrometry in the Atomically Resolved Dynamics Department 
+at the Max Planck Institute for the Structure and Dynamics of Matter. However most functions within the module should be compatible with 
 data acquired by other methods and/or systems.
 
 ## Installation
