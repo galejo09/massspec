@@ -9,7 +9,7 @@ It can be used to:
 
 
 Note that this module was initially developed for cryo femtosecond mass spectrometry in the Atomically Resolved Dynamics Department 
-at the Max Planck Institute for the Structure and Dynamics of Matter. However most functions within the module should be compatible with 
+at the Max Planck Institute for the Structure and Dynamics of Matter. However, most functions within the module should be compatible with 
 data acquired by other methods and/or systems.
 
 ## Installation
