@@ -474,3 +474,6 @@
 
 31/07/2020
 - REFLEX calibration with blank spectra
+
+Week of 03-07/08/2020
+- Wrote end of internship report and wrapped up analysis 
