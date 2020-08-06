@@ -1,5 +1,5 @@
 # massspec 
-*massspec* is a Python library for the analysis of mass spectra. 
+*massspec* is a Python library for the analysis of TOF mass spectra. 
 
 It can be used to:
 - convert flight times to m/z
