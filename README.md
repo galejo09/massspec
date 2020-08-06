@@ -13,7 +13,7 @@ at the Max Planck Institute for the Structure and Dynamics of Matter. However mo
 data acquired by other methods and/or systems.
 
 ## Installation
-massspec requires Python 3.7.3.
+*massspec* requires Python 3.7.3.
 ```
   # start by cloning the GitHub repository
   $ pip install git+https://github.com/galejo09/massspec.git
