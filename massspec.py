@@ -7,7 +7,7 @@ It can be used to:
 - plot multiple spectra in one figure
 - calculate shot-to-shot reproducibility
 
-Note that this module was developed specifically for cryo femtosecond mass 
+Note that this module was initially developed for cryo femtosecond mass 
 spectrometry in the Atomically Resolved Dynamics Department at the Max Planck 
 Institute for the Structure and Dynamics of Matter.
 """
