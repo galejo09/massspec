@@ -12,6 +12,8 @@ Note that this module was initially developed for cryo femtosecond mass spectrom
 at the Max Planck Institute for the Structure and Dynamics of Matter. However, most functions within the module should be compatible with 
 data acquired by other methods and/or systems.
 
+The first few functions are based on MATLAB scripts created by Frederik Busse.
+
 ## Installation
 *massspec* requires Python 3.7.3.
 ```
