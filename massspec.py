@@ -7,10 +7,11 @@ It can be used to:
 - plot multiple spectra in one figure
 - calculate shot-to-shot reproducibility
 
-Note that this module was initially developed for cryo femtosecond mass 
-spectrometry in the Atomically Resolved Dynamics Department at the Max Planck 
+Note that this module was initially developed for cryo femtosecond mass
+spectrometry in the Atomically Resolved Dynamics Department at the Max Planck
 Institute for the Structure and Dynamics of Matter.
 """
+import math
 import numpy as np
 import os
 import pandas as pd
@@ -353,8 +354,8 @@ class AnalyzeAcq:
     def pub_mode(self, fontsize=14, titlesize=24):
         """
         Sets rc params to produce figures that are formatted for publication.
-        
-        :param fontsize: font size of axes labels 
+
+        :param fontsize: font size of axes labels
         :type: int
         :param titlesize: font size of title
         :type: int
@@ -807,12 +808,12 @@ class AnalyzeAcq:
         :type: str
         :param wavelength: wavelength in nm; one of '1026nm', '513nm', '342nm'
         :type: str
-        :param nd: ND filter; one of '0.1ND', '0.3ND', '1.0+0.5ND', 
-            '1.0+0.5+0.4ND', '1.0+0.5+0.1ND', 'None'; 
-            if '', the function assumes that only 1 set of ND filters were used 
+        :param nd: ND filter; one of '0.1ND', '0.3ND', '1.0+0.5ND',
+            '1.0+0.5+0.4ND', '1.0+0.5+0.1ND', 'None';
+            if '', the function assumes that only 1 set of ND filters were used
             for the specified date
         :type: str
-        
+
         :return: dictionary of format
             {'PHAROS GUI power in mW' : 'Measured pulse energy in uJ'}
         :type: dict
@@ -826,36 +827,37 @@ class AnalyzeAcq:
             keep_default_na=False)
 
         measurements = df_powers[df_powers.date == date]
-                                          
+
         wavelengths = list(set(measurements['wavelength'].tolist()))
-                     
-        if wavelength not in wavelengths:        
+
+        if wavelength not in wavelengths:
             raise IOError(
                 f"Wavelength {wavelength} was not used on {date}. Choose one of {wavelengths}.")
-                     
+
         w = measurements[measurements.wavelength == wavelength]
-                     
-        if measurements['wavelength'].tolist().count(wavelength) != 1 and nd == '':
+
+        if measurements['wavelength'].tolist().count(
+                wavelength) != 1 and nd == '':
             filters = w['filter'].tolist()
             raise IOError(
                 f"Choose one set of filters from the following: {filters}")
-                            
+
         if nd != '':
             powers = w[w['filter'] == nd].iloc[:, 4:]
         else:
-            powers = w.iloc[:, 4:]                 
-                                       
+            powers = w.iloc[:, 4:]
+
         cols = powers.columns.tolist()
-                                          
+
         powervals = powers.values.tolist()[0]
-                     
+
         dict_powers = dict(zip(cols, powervals))
 
         for power, pulseE in dict_powers.items():
             if dict_powers[power] != "":
                 dict_powers[power] = str(pulseE) + r' $\mu$J'
 
-        dict_powers = {k:v for k,v in dict_powers.items() if v != ''}            
+        dict_powers = {k: v for k, v in dict_powers.items() if v != ''}
 
         return dict_powers
 
@@ -959,7 +961,8 @@ class AnalyzeAcq:
                                                        polyorder=2)
 
         peaks_avg = scipy.signal.find_peaks(voltages_filtered,
-                                            height=3.5 * np.std(voltages_avg[16000:21000]),
+                                            height=3.5 *
+                                            np.std(voltages_avg[16000:21000]),
                                             distance=200)[0]
 
         widths = scipy.signal.peak_widths(voltages_filtered, peaks_avg)[0]
@@ -1072,3 +1075,140 @@ class AnalyzeAcq:
             return count_percent, mean_flight_t
 
         return count_percent
+
+    def rise_time(self, file, header, t, voltages,
+                  est_flight_t, plot=True, savefig=None):
+        """
+        Calculates the rise time of a peak given an estimate of the flight time
+        of the ion that produced it.
+
+        :param file: acquisition file
+        :type: str
+        :param header: header of acquisiton file
+        :type: dict
+        :param t: flight times in us
+        :type: numpy.ndarray
+        :param voltages: averaged voltages in mV
+        :type: numpy.ndarray
+        :param est_flight_t: (lower) estimate of the flight time
+        :type: float
+        :param plot: if True, the processed signal is plotted on top of the raw
+            signal with markers indicating the onset and flight times.
+        :type: bool
+        :param savefig: spectrum will be saved with this file name; if None,
+            the spectrum will only be shown
+        :type: str
+
+        :return: rise time, onset time, flight time
+        :type: tuple
+        """
+        # Set upper and lower limits for UDWT and noise calculations
+        upper_lim = math.floor(est_flight_t)
+        lower_lim = upper_lim - 5
+
+        # Perform Undecimated Discrete Wavelet Transform to denoise signal
+        coeffs = pywt.swt(data=voltages,
+                          wavelet='db8')
+
+        coeffst = []
+
+        for ca, cd in coeffs:
+            cat = pywt.threshold(data=ca,
+                                 value=np.std(ca[lower_lim:upper_lim]) * 2,
+                                 mode='hard')
+            cdt = pywt.threshold(data=cd,
+                                 value=np.std(cd[lower_lim:upper_lim]) * 2,
+                                 mode='hard')
+            coeffst.append((cat, cdt))
+
+        voltages_udwt = pywt.iswt(coeffs=coeffst,
+                                  wavelet='db8')
+
+        # Apply Savitzky–Golay filter to smooth denoised signal
+        voltages_filtered = scipy.signal.savgol_filter(voltages_udwt,
+                                                       window_length=101,
+                                                       polyorder=2)
+
+        # Noise is measured as the standard deviation of the raw signal 5
+        # us before the expected molecular ion peak
+        noise = np.std(voltages[lower_lim:upper_lim])
+
+        # 7:2 signal-to-noise ratio
+        signal = noise * 3.5
+
+        peaks = scipy.signal.find_peaks(voltages_filtered,
+                                        height=signal,
+                                        distance=200)[0]
+
+        peak_widths = scipy.signal.peak_widths(voltages_filtered,
+                                               peaks=peaks,
+                                               rel_height=0.98)
+
+        t_onset_ind = [int(math.ceil(i)) for i in peak_widths[2]]
+        t_onset_peaks = [t[i] for i in t_onset_ind]
+
+        t_peaks, v_peaks = [], []
+
+        for i in peaks:
+            t_peaks.append(t[i])
+            v_peaks.append(voltages_filtered[i])
+
+        # Identify the flight time using the lower estimate provided by the
+        # user
+        for ind, time in enumerate(t_peaks):
+            if time >= est_flight_t:
+                t_flight = time
+                v_flight = v_peaks[ind]
+                break
+
+        try:
+            t_flight
+        except BaseException:
+            raise IOError(
+                f'The estimated flight time must be less than or equal to {np.max(t_peaks)}.')
+
+        # Identify the onset time using the flight time
+        for ind, time in enumerate(t_onset_peaks):
+            if time >= t_flight:
+                t_onset = t_onset_peaks[ind - 1]
+                v_onset = peak_widths[1][ind - 1]
+                break
+
+        rise_time = round(t_flight - t_onset, 3)
+
+        fname = file.split('\\')[-1]
+        n_shots = header['nFramesCount'][0]
+        plt.figure(figsize=(15, 10))
+        plt.plot(t, voltages, zorder=0, label='raw data')
+        plt.plot(t, voltages_filtered, zorder=1,
+                 label='denoised + filtered data')
+        plt.scatter(
+            t_onset,
+            v_onset,
+            color='green',
+            s=150,
+            zorder=2,
+            label='$t_{onset}$')
+        plt.scatter(
+            t_flight,
+            v_flight,
+            color='r',
+            s=150,
+            zorder=2,
+            label='$t_{peak}$')
+        plt.legend()
+        plt.xlim((t_flight - 1, t_flight + 1))
+        plt.ylim((np.min(voltages) - 0.55, v_flight + 5))
+        plt.xlabel(r"$t$ [$\mu$s]")
+        plt.ylabel("Voltage [mV]")
+        plt.title(f"{fname}, avg. of {n_shots} shots")
+
+        if savefig is None:
+            plt.show()
+        elif isinstance(savefig, str):
+            plt.savefig(savefig, bbox_inches='tight')
+        else:
+            raise IOError(
+                "Arg savefig must be a string (i.e. 'filename.png')")
+
+        return rise_time, t_onset, t_flight
