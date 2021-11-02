@@ -12,7 +12,7 @@ spectrometry in the Atomically Resolved Dynamics Department at the Max Planck
 Institute for the Structure and Dynamics of Matter.
 
 The first few functions are based on MATLAB scripts created by Frederik Busse. 
-The code is written by Glaynel Alejo.
+The code was written by Glaynel Alejo.
 """
 import math
 import numpy as np
