@@ -14,6 +14,8 @@ data acquired by other methods and/or systems.
 
 The first few functions are based on MATLAB scripts created by Frederik Busse.
 
+The code was written by Glaynel Alejo.
+
 ## Installation
 *massspec* requires Python 3.7.3.
 ```
