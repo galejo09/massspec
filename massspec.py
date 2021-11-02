@@ -11,7 +11,8 @@ Note that this module was initially developed for cryo femtosecond mass
 spectrometry in the Atomically Resolved Dynamics Department at the Max Planck
 Institute for the Structure and Dynamics of Matter.
 
-The first few functions are based on MATLAB scripts created by Frederik Busse.
+The first few functions are based on MATLAB scripts created by Frederik Busse. 
+The code is written by Glaynel Alejo.
 """
 import math
 import numpy as np
